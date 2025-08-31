@@ -38,3 +38,10 @@ Python demo: `python pocketvec-sqlite/python/demo.py` (local embeddings example)
 - Installation: `INSTALL.md`
 - User Guide (SQL/Python examples): `USER_GUIDE.md`
 - Contributing: `AGENTS.md`
+
+## Get Involved
+- Issues: use the templates under `.github/ISSUE_TEMPLATE/`:
+  - Roadmap — IVF-PQ indexing: `.github/ISSUE_TEMPLATE/roadmap-ivf-pq-indexing.md`
+  - Integration with SQLite FTS5: `.github/ISSUE_TEMPLATE/integration-with-sqlite-fts5.md`
+  - Python API improvements: `.github/ISSUE_TEMPLATE/python-api-improvements.md`
+- Discussions: propose ideas, ask questions, and share results via GitHub Discussions (if enabled) or open an issue using the templates above.
