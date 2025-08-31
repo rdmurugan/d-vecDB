@@ -1,5 +1,7 @@
 # Installation
 
+Install the Rust-based SQLite vector database extension for local embeddings and lightweight ANN search.
+
 ## Requirements
 - Rust toolchain (stable) with `cargo`
 - SQLite 3 with loadable extensions enabled (CLI or embedded)
@@ -40,7 +42,8 @@ print(con.execute("SELECT pocketvec_version()").fetchone()[0])
 - “no such function pocketvec_version”: extension not loaded—check `.load`/`load_extension` path.
 - macOS Gatekeeper: prefer absolute paths; build locally (codesigning not required).
 - Dimension errors: ensure vector blob length equals `4 * dim` (float32 bytes).
+ - ANN expectations: current vtab performs lightweight ANN via linear scan; ensure dataset sizes fit your device.
 
 ## Verify
-- Minimal: `python pocketvec-sqlite/test_minimal.py`
-- End-to-end: `python pocketvec-sqlite/tests/test.py`
+- Minimal: `python pocketvec-sqlite/test_minimal.py` (checks SQLite vector database functions)
+- End-to-end: `python pocketvec-sqlite/tests/test.py` (demonstrates local embeddings and lightweight ANN queries)

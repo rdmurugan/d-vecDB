@@ -1,7 +1,7 @@
 # User Guide
 
 ## Overview
-`pocketvec-sqlite` adds cosine similarity and a virtual table for nearest-neighbor style queries. Distances reported are `1.0 - cosine`, so lower is better.
+`pocketvec-sqlite` turns SQLite into a lightweight SQLite vector database for local embeddings. It provides cosine similarity and a lightweight ANN virtual table for nearest-neighbor queries. Distances are `1.0 - cosine` (lower is better).
 
 ## Data Model
 - Base table: one row per vector, e.g. `docs_vecs(rowid INTEGER PRIMARY KEY, vec BLOB NOT NULL)`.
@@ -26,6 +26,7 @@ SELECT rowid, distance FROM ann
 ORDER BY distance
 LIMIT 10;
 ```
+This vtab implements a lightweight ANN search path (linear scan + sort) suitable for on-device and local embeddings workflows.
 
 ## Python Example
 ```python
@@ -47,7 +48,7 @@ rows = con.execute("SELECT rowid, distance FROM ann ORDER BY distance LIMIT 5").
 ```
 
 ## Notes & Limits
-- Full scan: the vtab linearly scans `base_table` and sorts by distance.
+- Full scan: the vtab linearly scans `base_table` and sorts by distance (lightweight ANN).
 - Only float32 cosine is supported; ensure blob size equals `4 * dim`.
 - One query vector per thread via `pocketvec_set_q`.
 - Enable logs with `RUST_LOG=debug` for troubleshooting.

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is **pocketvec-sqlite**, a SQLite extension written in Rust that provides vector similarity search capabilities using cosine distance. It implements a virtual table interface that enables efficient nearest neighbor queries on float32 vector embeddings stored as BLOBs.
+This is **pocketvec-sqlite**, a Rust-based SQLite vector database extension for local embeddings. It provides cosine similarity and a lightweight ANN virtual table over float32 vector embeddings stored as BLOBs.
 
 ## Build Commands
 
@@ -18,7 +18,7 @@ This is **pocketvec-sqlite**, a SQLite extension written in Rust that provides v
 - **End-to-end test**: `python3 tests/test.py` (comprehensive smoke test)
 - **SQL smoke test**: Available at `tests/smoke.sql`
 
-The test expects the release build to exist at `target/release/libpocketvec0.dylib` (macOS) or equivalent platform extension.
+The test expects the release build to exist at `target/release/libpocketvec0.dylib` (macOS) or equivalent platform extension and exercises local embeddings with lightweight ANN queries.
 
 ## Core Architecture
 
@@ -57,7 +57,7 @@ The test expects the release build to exist at `target/release/libpocketvec0.dyl
 
 - Vector BLOBs must be exactly `4 * dimension` bytes (float32 arrays)
 - Query vector is stored in thread-local state between `pocketvec_set_q()` and vtab queries
-- Virtual table performs full table scan with in-memory sorting by cosine distance
+- Virtual table performs full table scan with in-memory sorting by cosine distance (lightweight ANN)
 - Distance metric: `1.0 - cosine_similarity` (lower = more similar)
 
 ## Known Issues & Workarounds
