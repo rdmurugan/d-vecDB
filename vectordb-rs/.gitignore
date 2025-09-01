@@ -1,0 +1,105 @@
+# Rust build artifacts
+/target/
+**/target/
+
+# Debug symbols
+*.pdb
+
+# Cargo lock file (uncomment if this is a library)
+# Cargo.lock
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Log files
+*.log
+logs/
+
+# Database files
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# Runtime data
+data/
+*.pid
+*.seed
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Backup files
+*.bak
+*.backup
+
+# Generated protocol buffer files
+proto/gen/
+
+# Test artifacts
+test-results/
+*.test
+
+# Benchmark results
+benchmarks/
+criterion/
+
+# Local configuration
+config/local.yaml
+config/development.yaml
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Profiling data
+*.prof
+perf.data*
+
+# Memory dumps
+*.hprof
+core.*
+
+# Build outputs
+dist/
+build/
+
+# Package manager
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python cache (if any Python tooling is used)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Generated documentation
+docs/generated/

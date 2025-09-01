@@ -1,0 +1,22 @@
+[package]
+name = "vectordb-common"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+uuid = { workspace = true }
+tracing = { workspace = true }
+nalgebra = { workspace = true }
+half = { workspace = true }
+
+[dev-dependencies]
+criterion = { workspace = true }
+vectordb-index = { path = "../index" }
+
+[[bench]]
+name = "vector_performance"
+harness = false

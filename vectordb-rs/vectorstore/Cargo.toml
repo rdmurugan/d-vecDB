@@ -1,0 +1,17 @@
+[package]
+name = "vectordb-vectorstore"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+vectordb-common = { path = "../common" }
+vectordb-storage = { path = "../storage" }
+vectordb-index = { path = "../index" }
+tokio = { workspace = true }
+serde = { workspace = true }
+parking_lot = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+uuid = { workspace = true }
+tracing = { workspace = true }
+metrics = { workspace = true }

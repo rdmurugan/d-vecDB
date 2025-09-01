@@ -1,0 +1,186 @@
+syntax = "proto3";
+
+package vectordb.v1;
+
+// VectorDB service definition
+service VectorDb {
+  // Collection management
+  rpc CreateCollection(CreateCollectionRequest) returns (CreateCollectionResponse);
+  rpc DeleteCollection(DeleteCollectionRequest) returns (DeleteCollectionResponse);
+  rpc ListCollections(ListCollectionsRequest) returns (ListCollectionsResponse);
+  rpc GetCollectionInfo(GetCollectionInfoRequest) returns (GetCollectionInfoResponse);
+
+  // Vector operations
+  rpc Insert(InsertRequest) returns (InsertResponse);
+  rpc BatchInsert(BatchInsertRequest) returns (BatchInsertResponse);
+  rpc Delete(DeleteRequest) returns (DeleteResponse);
+  rpc Query(QueryRequest) returns (QueryResponse);
+  rpc Update(UpdateRequest) returns (UpdateResponse);
+
+  // Server operations
+  rpc GetStats(GetStatsRequest) returns (GetStatsResponse);
+  rpc Health(HealthRequest) returns (HealthResponse);
+}
+
+// Enums
+enum DistanceMetric {
+  DISTANCE_METRIC_UNSPECIFIED = 0;
+  DISTANCE_METRIC_COSINE = 1;
+  DISTANCE_METRIC_EUCLIDEAN = 2;
+  DISTANCE_METRIC_DOT_PRODUCT = 3;
+  DISTANCE_METRIC_MANHATTAN = 4;
+}
+
+enum VectorType {
+  VECTOR_TYPE_UNSPECIFIED = 0;
+  VECTOR_TYPE_FLOAT32 = 1;
+  VECTOR_TYPE_FLOAT16 = 2;
+  VECTOR_TYPE_INT8 = 3;
+}
+
+// Common types
+message Vector {
+  string id = 1;
+  repeated float data = 2;
+  map<string, string> metadata = 3;
+}
+
+message IndexConfig {
+  uint32 max_connections = 1;
+  uint32 ef_construction = 2;
+  uint32 ef_search = 3;
+  uint32 max_layer = 4;
+}
+
+message CollectionConfig {
+  string name = 1;
+  uint32 dimension = 2;
+  DistanceMetric distance_metric = 3;
+  VectorType vector_type = 4;
+  IndexConfig index_config = 5;
+}
+
+// Collection operations
+message CreateCollectionRequest {
+  CollectionConfig config = 1;
+}
+
+message CreateCollectionResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message DeleteCollectionRequest {
+  string collection_name = 1;
+}
+
+message DeleteCollectionResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message ListCollectionsRequest {}
+
+message ListCollectionsResponse {
+  repeated string collection_names = 1;
+}
+
+message GetCollectionInfoRequest {
+  string collection_name = 1;
+}
+
+message CollectionStats {
+  string name = 1;
+  uint64 vector_count = 2;
+  uint32 dimension = 3;
+  uint64 index_size = 4;
+  uint64 memory_usage = 5;
+}
+
+message GetCollectionInfoResponse {
+  CollectionConfig config = 1;
+  CollectionStats stats = 2;
+}
+
+// Vector operations
+message InsertRequest {
+  string collection_name = 1;
+  Vector vector = 2;
+}
+
+message InsertResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message BatchInsertRequest {
+  string collection_name = 1;
+  repeated Vector vectors = 2;
+}
+
+message BatchInsertResponse {
+  bool success = 1;
+  string message = 2;
+  uint32 inserted_count = 3;
+}
+
+message DeleteRequest {
+  string collection_name = 1;
+  string vector_id = 2;
+}
+
+message DeleteResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message QueryRequest {
+  string collection_name = 1;
+  repeated float query_vector = 2;
+  uint32 limit = 3;
+  optional uint32 ef_search = 4;
+  map<string, string> filter = 5;
+}
+
+message QueryResult {
+  string id = 1;
+  float distance = 2;
+  map<string, string> metadata = 3;
+}
+
+message QueryResponse {
+  repeated QueryResult results = 1;
+  uint64 query_time_ms = 2;
+}
+
+message UpdateRequest {
+  string collection_name = 1;
+  Vector vector = 2;
+}
+
+message UpdateResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// Server operations
+message GetStatsRequest {}
+
+message ServerStats {
+  uint64 total_vectors = 1;
+  uint32 total_collections = 2;
+  uint64 memory_usage = 3;
+  uint64 disk_usage = 4;
+  uint64 uptime_seconds = 5;
+}
+
+message GetStatsResponse {
+  ServerStats stats = 1;
+}
+
+message HealthRequest {}
+
+message HealthResponse {
+  bool healthy = 1;
+  string status = 2;
+}

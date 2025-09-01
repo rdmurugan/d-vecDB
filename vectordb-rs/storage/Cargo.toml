@@ -1,0 +1,20 @@
+[package]
+name = "vectordb-storage"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+vectordb-common = { path = "../common" }
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+bincode = { workspace = true }
+memmap2 = { workspace = true }
+parking_lot = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+uuid = { workspace = true }
+tracing = { workspace = true }
+
+[dev-dependencies]
+tempfile = "3.0"

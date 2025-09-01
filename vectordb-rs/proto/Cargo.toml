@@ -1,0 +1,12 @@
+[package]
+name = "vectordb-proto"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tonic = { workspace = true }
+prost = { workspace = true }
+vectordb-common = { path = "../common" }
+
+[build-dependencies]
+tonic-build = { workspace = true }

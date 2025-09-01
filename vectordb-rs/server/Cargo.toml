@@ -1,0 +1,33 @@
+[package]
+name = "vectordb-server"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "vectordb-server"
+path = "src/main.rs"
+
+[dependencies]
+vectordb-common = { path = "../common" }
+vectordb-storage = { path = "../storage" }
+vectordb-vectorstore = { path = "../vectorstore" }
+vectordb-proto = { path = "../proto" }
+tokio = { workspace = true }
+tokio-util = { workspace = true }
+tonic = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_yaml = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+metrics = { workspace = true }
+metrics-exporter-prometheus = { workspace = true }
+parking_lot = { workspace = true }
+uuid = { workspace = true }
+clap = { workspace = true }
+config = { workspace = true }
+axum = "0.7"
+tower = "0.4"
+tower-http = { version = "0.5", features = ["cors", "trace"] }

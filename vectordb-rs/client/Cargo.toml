@@ -1,0 +1,23 @@
+[package]
+name = "vectordb-client"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+vectordb-common = { path = "../common" }
+vectordb-proto = { path = "../proto" }
+tokio = { workspace = true }
+tonic = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+uuid = { workspace = true }
+tracing = { workspace = true }
+async-trait = { workspace = true }
+reqwest = { version = "0.11", features = ["json", "gzip"] }
+
+[features]
+default = ["grpc", "rest"]
+grpc = []
+rest = []
