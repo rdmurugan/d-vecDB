@@ -1,16 +1,30 @@
 # VectorDB-RS
 
-A high-performance, production-ready standalone vector database written in Rust.
+A vector database implementation in Rust - **Currently in Alpha Development**.
 
-## Features
+⚠️ **This project is experimental and not ready for production use.**
 
-- **High Performance**: SIMD-optimized distance calculations with HNSW indexing
-- **Production Ready**: WAL-based persistence, crash recovery, monitoring
-- **Scalable**: Handle millions of vectors with sub-millisecond queries
-- **Multiple APIs**: gRPC and REST interfaces
-- **Client SDKs**: Rust, Python, and Node.js clients
-- **Distance Metrics**: Cosine, Euclidean, Dot Product, Manhattan
-- **Vector Types**: float32, float16, int8 quantization support
+## Current Features (Alpha Stage)
+
+### Working Components ✅
+- **Distance Calculations**: Cosine, Euclidean, Dot Product, Manhattan (tested)
+- **HNSW Indexing**: Basic approximate nearest neighbor search implementation
+- **Storage Framework**: Memory-mapped storage with WAL (Write-Ahead Log) foundation
+- **Type System**: Comprehensive Rust type definitions and error handling
+- **API Design**: Protocol buffer definitions for gRPC and REST APIs
+
+### In Development 🔄
+- **Client-Server Communication**: Protocol mapping and integration 
+- **Performance Optimization**: Memory management and query optimization
+- **Error Handling**: Comprehensive edge case handling
+- **Integration Testing**: End-to-end workflow validation
+
+### Not Yet Implemented ❌
+- **Authentication/Security**: No access control
+- **Clustering**: Single-node operation only
+- **Advanced Queries**: No filtering or aggregations
+- **Production Tooling**: Limited operational features
+- **Client SDKs**: Only basic framework exists
 
 ## Architecture
 
@@ -33,27 +47,57 @@ A high-performance, production-ready standalone vector database written in Rust.
 └─────────────┘       └─────────────┘       └─────────────┘
 ```
 
-## Quick Start
+## Development Setup
+
+⚠️ **Note**: The build currently has compilation issues that need to be resolved.
 
 ```bash
-# Build the project
+# Clone and build (may have compilation errors)
+git clone <repository>
+cd d-vecDB
 cargo build --release
 
-# Start the server
-./target/release/vectordb-server
+# Run unit tests for working components
+cargo test --lib --package vectordb-common  # Distance calculations
+cargo test --lib --package vectordb-index   # HNSW indexing
 
-# Use the CLI
-./target/release/vectordb-cli create-collection vectors --dimension 128
-./target/release/vectordb-cli insert vectors --file vectors.json
-./target/release/vectordb-cli query vectors --vector "[0.1, 0.2, ...]" --limit 10
+# Run benchmarks (when working)
+cargo bench --package vectordb-common
 ```
 
-## Benchmarks
+### Current Build Status
+- ✅ **vectordb-common**: Compiles and tests pass
+- ✅ **vectordb-index**: Compiles with basic functionality
+- ❌ **vectordb-client**: Compilation errors (protocol mapping issues)  
+- ❌ **vectordb-server**: Compilation errors (missing dependencies)
+- ❌ **vectordb-vectorstore**: Type annotation issues
 
-- **Insert**: 50K+ vectors/second
-- **Query**: <1ms p99 latency for 1M vectors
-- **Memory**: ~4 bytes per vector dimension + index overhead
-- **Throughput**: 10K+ QPS on modern hardware
+## Performance Status
+
+⚠️ **Important**: Current performance claims are **theoretical and unvalidated**.
+
+### Theoretical Performance (Unverified)
+Based on algorithmic complexity analysis:
+- **Search Complexity**: O(log N) HNSW vs O(N) linear scan
+- **Expected Speedup**: 10-1000x over brute force (dataset dependent)
+- **Memory Usage**: ~4 bytes per dimension + index overhead
+
+### Actual Benchmarking Status
+- **❌ Not Measured**: No real-world performance testing completed
+- **❌ Not Validated**: Claims require empirical verification  
+- **❌ Hardware Dependent**: Performance varies significantly by system
+
+### Benchmarking Infrastructure
+- ✅ **Framework**: Criterion benchmarking setup available
+- ✅ **Test Data**: Scripts to generate synthetic datasets
+- ✅ **Baseline Comparison**: Framework for comparing with linear search
+- ❌ **Real Data Testing**: No validation with actual embeddings
+
+To run available benchmarks:
+```bash
+cargo bench --package vectordb-common    # Distance calculations only
+# Other benchmarks pending compilation fixes
+```
 
 ## License
 
