@@ -1,10 +1,10 @@
 Metadata-Version: 2.4
 Name: d-vecdb
-Version: 0.1.0
+Version: 0.1.1
 Summary: High-performance vector database written in Rust with Python client
 Home-page: https://github.com/rdmurugan/d-vecDB
-Author: d-vecDB Team
-Author-email: d-vecDB Team <team@d-vecdb.com>
+Author: Durai
+Author-email: Durai <durai@infinidatum.com>
 Project-URL: Homepage, https://github.com/rdmurugan/d-vecDB
 Project-URL: Documentation, https://github.com/rdmurugan/d-vecDB#readme
 Project-URL: Repository, https://github.com/rdmurugan/d-vecDB
@@ -13,7 +13,7 @@ Keywords: vector database,similarity search,machine learning,embeddings,HNSW,rus
 Classifier: Development Status :: 4 - Beta
 Classifier: Intended Audience :: Developers
 Classifier: Intended Audience :: Science/Research
-Classifier: License :: OSI Approved :: MIT License
+Classifier: License :: Other/Proprietary License
 Classifier: Operating System :: OS Independent
 Classifier: Programming Language :: Python :: 3
 Classifier: Programming Language :: Python :: 3.8
@@ -26,6 +26,7 @@ Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
 Classifier: Topic :: Software Development :: Libraries :: Python Modules
 Requires-Python: >=3.8
 Description-Content-Type: text/markdown
+License-File: LICENSE
 Requires-Dist: httpx>=0.24.0
 Requires-Dist: grpcio>=1.50.0
 Requires-Dist: grpcio-tools>=1.50.0
@@ -56,24 +57,18 @@ Requires-Dist: uvicorn>=0.18.0; extra == "server"
 Requires-Dist: fastapi>=0.95.0; extra == "server"
 Dynamic: author
 Dynamic: home-page
+Dynamic: license-file
 Dynamic: requires-python
 
-# 🚀 VectorDB-RS
+# 🚀 d-vecDB
 
-[![Build Status](https://github.com/your-org/d-vecDB/workflows/CI/badge.svg)](https://github.com/your-org/d-vecDB/actions)
 [![Rust Version](https://img.shields.io/badge/rust-1.70+-brightgreen.svg)](https://rustup.rs/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Docker](https://img.shields.io/badge/docker-supported-blue.svg)](https://hub.docker.com/r/vectordb/vectordb-rs)
-[![Crates.io](https://img.shields.io/crates/v/vectordb-rs.svg)](https://crates.io/crates/vectordb-rs)
-[![Downloads](https://img.shields.io/crates/d/vectordb-rs.svg)](https://crates.io/crates/vectordb-rs)
-[![Documentation](https://docs.rs/vectordb-rs/badge.svg)](https://docs.rs/vectordb-rs)
-[![Coverage](https://codecov.io/gh/your-org/d-vecDB/branch/main/graph/badge.svg)](https://codecov.io/gh/your-org/d-vecDB)
-[![Security Audit](https://img.shields.io/badge/security-audit-passing-green.svg)](https://github.com/your-org/d-vecDB/security)
+[![License: Enterprise](https://img.shields.io/badge/License-Enterprise-red.svg)](LICENSE)
 [![Performance](https://img.shields.io/badge/performance-35M+%20ops%2Fs-orange.svg)](#-performance-benchmarks)
 
 **A high-performance, production-ready vector database written in Rust**
 
-VectorDB-RS is a modern vector database designed for AI applications, semantic search, and similarity matching. Built from the ground up in Rust, it delivers exceptional performance, memory safety, and concurrent processing capabilities.
+d-vecDB is a modern vector database designed for AI applications, semantic search, and similarity matching. Built from the ground up in Rust, it delivers exceptional performance, memory safety, and concurrent processing capabilities.
 
 ---
 
@@ -151,7 +146,7 @@ Based on our benchmark results, here are conservative performance extrapolations
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                  🎯 VectorDB-RS Stack                       │
+│                  🎯 d-vecDB Stack                           │
 ├─────────────────────────────────────────────────────────────┤
 │  CLI Tool      │  Client SDKs   │  REST + gRPC APIs          │
 │  (Management)  │  (Rust/Python) │  (Universal Access)        │
@@ -313,11 +308,9 @@ d-vecDB/
 
 ## 📚 **Client Libraries**
 
-VectorDB-RS provides official client libraries for multiple programming languages:
+d-vecDB provides official client libraries for multiple programming languages:
 
 ### 🐍 **Python Client**
-[![PyPI version](https://badge.fury.io/py/vectordb-client.svg)](https://badge.fury.io/py/vectordb-client)
-[![PyPI downloads](https://img.shields.io/pypi/dm/vectordb-client.svg)](https://pypi.org/project/vectordb-client/)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 
 **Full-featured Python client with async support, NumPy integration, and type safety.**
@@ -345,7 +338,6 @@ results = client.search_simple("docs", np.random.random(384), limit=5)
 **📖 [Complete Python Documentation →](python-client/README.md)**
 
 ### 🦀 **Rust Client** *(Native)*
-[![Crates.io](https://img.shields.io/crates/v/vectordb-rs.svg)](https://crates.io/crates/vectordb-rs)
 
 Direct access to the native Rust API for maximum performance.
 
@@ -550,8 +542,8 @@ CMD ["vectordb-server", "--config", "/etc/vectordb/config.toml"]
 
 ```bash
 # Build and run
-docker build -t vectordb-rs .
-docker run -p 8080:8080 -p 9090:9090 -v ./data:/data vectordb-rs
+docker build -t d-vecdb .
+docker run -p 8080:8080 -p 9090:9090 -v ./data:/data d-vecdb
 ```
 
 ### **Kubernetes Deployment**
@@ -560,20 +552,20 @@ docker run -p 8080:8080 -p 9090:9090 -v ./data:/data vectordb-rs
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vectordb-rs
+  name: d-vecdb
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: vectordb-rs
+      app: d-vecdb
   template:
     metadata:
       labels:
-        app: vectordb-rs
+        app: d-vecdb
     spec:
       containers:
-      - name: vectordb-rs
-        image: vectordb-rs:latest
+      - name: d-vecdb
+        image: d-vecdb:latest
         ports:
         - containerPort: 8080
         - containerPort: 9090
@@ -590,9 +582,9 @@ spec:
 
 ```yaml
 # Prometheus configuration
-- job_name: 'vectordb-rs'
+- job_name: 'd-vecdb'
   static_configs:
-  - targets: ['vectordb-rs:9091']
+  - targets: ['d-vecdb:9091']
   scrape_interval: 15s
   metrics_path: /metrics
 ```
@@ -603,7 +595,7 @@ spec:
 
 ### **vs. Traditional Vector Databases**
 
-| Feature | VectorDB-RS | Pinecone | Weaviate | Qdrant |
+| Feature | d-vecDB | Pinecone | Weaviate | Qdrant |
 |---------|-------------|----------|----------|--------|
 | **Language** | Rust | Python/C++ | Go | Rust |
 | **Memory Safety** | ✅ Zero-cost | ❌ Manual | ❌ GC Overhead | ✅ Zero-cost |
@@ -656,16 +648,18 @@ git push origin feature/amazing-feature
 
 ## 📄 **License**
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the d-vecDB Enterprise License - see the [LICENSE](LICENSE) file for details.
+
+**For Enterprise Use**: Commercial usage requires a separate enterprise license. Contact durai@infinidatum.com for licensing terms.
 
 ---
 
 ## 🆘 **Support**
 
-- **📧 Email**: support@vectordb-rs.com
-- **💬 Discord**: [VectorDB-RS Community](https://discord.gg/vectordb-rs)
-- **🐛 Issues**: [GitHub Issues](https://github.com/your-org/d-vecDB/issues)
-- **📚 Documentation**: [docs.vectordb-rs.com](https://docs.vectordb-rs.com)
+- **📧 Email**: durai@infinidatum.com
+- **💬 Discord**: [d-vecDB Community](https://discord.gg/d-vecdb)
+- **🐛 Issues**: [GitHub Issues](https://github.com/rdmurugan/d-vecDB/issues)
+- **📚 Documentation**: [docs.d-vecdb.com](https://docs.d-vecdb.com)
 
 ---
 
@@ -678,4 +672,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**⚡ Ready to build the future of AI-powered applications? Get started with VectorDB-RS today!**
+**⚡ Ready to build the future of AI-powered applications? Get started with d-vecDB today!**

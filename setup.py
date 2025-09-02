@@ -33,7 +33,7 @@ def read_requirements():
 
 setup(
     name="d-vecdb",
-    version="0.1.0",
+    version="0.1.1",
     author="Durai",
     author_email="durai@infinidatum.com",
     description="High-performance vector database written in Rust with Python client",
