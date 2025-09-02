@@ -120,6 +120,11 @@ pip install d-vecdb
 pip install d-vecdb[dev,docs,examples]
 ```
 
+**After installation, you have access to:**
+- **Python client library**: `vectordb_client` for programmatic access
+- **Command-line tools**: `d-vecdb-server`, `d-vecdb-cli` for server management
+- **Example scripts**: Located in your Python site-packages
+
 **Option 2: Install from Source**
 ```bash
 # Clone the repository
@@ -154,10 +159,47 @@ source venv/bin/activate  # Linux/macOS
 # venv\Scripts\activate   # Windows
 ```
 
-### **Start the Server**
+### **Getting Started After `pip install d-vecdb`**
+
+**Step 1: Start the d-vecDB Server**
+```bash
+# Start with default configuration (after pip install)
+d-vecdb-server
+
+# Or with custom settings
+d-vecdb-server \
+  --host 0.0.0.0 \
+  --port 8080 \
+  --data-dir /path/to/data \
+  --log-level info
+```
+
+**Step 2: Use the Python Client**
+```python
+# Import the client library
+from vectordb_client import VectorDBClient
+import numpy as np
+
+# Connect to the server
+client = VectorDBClient(host="localhost", port=8080)
+
+# Create your first collection
+client.create_collection_simple("my_vectors", 128, "cosine")
+
+# Insert a vector
+vector_data = np.random.random(128)
+client.insert_simple("my_vectors", "vector_1", vector_data)
+
+# Search for similar vectors
+query_vector = np.random.random(128)
+results = client.search_simple("my_vectors", query_vector, limit=5)
+print(f"Found {len(results)} similar vectors")
+```
+
+### **Alternative: Start Server from Source**
 
 ```bash
-# Start with default configuration
+# Start with default configuration (from source build)
 ./target/release/vectordb-server --config config.toml
 
 # Or with custom settings
@@ -168,7 +210,9 @@ source venv/bin/activate  # Linux/macOS
   --log-level info
 ```
 
-### **Basic Usage**
+### **REST API Usage**
+
+Once your server is running, you can also use the REST API directly:
 
 ```bash
 # Create a collection
@@ -260,8 +304,8 @@ d-vecDB provides official client libraries for multiple programming languages:
 - 🌐 **Multi-Protocol**: REST and gRPC support
 
 ```bash
-# Install from PyPI
-pip install vectordb-client
+# Install from PyPI (included with d-vecdb)
+pip install d-vecdb
 
 # Quick usage
 from vectordb_client import VectorDBClient
@@ -428,13 +472,13 @@ let results = client.search("documents", query_vector, 10).await?;
 ```
 
 ```python
-# Python Client (Coming Soon)
-import vectordb
+# Python Client (Available Now!)
+from vectordb_client import VectorDBClient
 
-client = vectordb.Client("http://localhost:8080")
-client.create_collection("documents", 128, "cosine")
-client.insert("documents", "doc1", [0.1, 0.2, 0.3], {"title": "Example"})
-results = client.search("documents", query_vector, limit=10)
+client = VectorDBClient("http://localhost:8080")
+client.create_collection_simple("documents", 128, "cosine")
+client.insert_simple("documents", "doc1", [0.1, 0.2, 0.3], {"title": "Example"})
+results = client.search_simple("documents", query_vector, limit=10)
 ```
 
 ---

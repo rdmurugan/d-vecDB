@@ -30,8 +30,23 @@ A comprehensive Python client library for [d-vecDB](https://github.com/rdmurugan
 
 ## 📦 **Installation**
 
+### **Recommended: Install d-vecDB with Python Client**
+
 ```bash
-# Install from PyPI
+# Install d-vecDB (includes Python client)
+pip install d-vecdb
+
+# Install with development dependencies
+pip install d-vecdb[dev]
+
+# Install with example dependencies  
+pip install d-vecdb[examples]
+```
+
+### **Alternative: Install Python Client Only**
+
+```bash
+# Install just the Python client library
 pip install vectordb-client
 
 # Install with development dependencies
@@ -47,6 +62,49 @@ pip install vectordb-client[examples]
 git clone https://github.com/rdmurugan/d-vecDB.git
 cd d-vecDB/python-client
 pip install -e .
+```
+
+## 🚀 **Getting Started After Installation**
+
+### **Step 1: Start the d-vecDB Server**
+
+After installing `d-vecdb`, you can start the server:
+
+```bash
+# Start the server (available after pip install d-vecdb)
+d-vecdb-server
+
+# Or with custom settings
+d-vecdb-server --host 0.0.0.0 --port 8080 --log-level info
+```
+
+### **Step 2: Use the Python Client**
+
+Now you can use the Python client to interact with your d-vecDB server:
+
+```python
+import numpy as np
+from vectordb_client import VectorDBClient
+
+# Connect to your d-vecDB server
+client = VectorDBClient(host="localhost", port=8080)
+
+# Create a collection
+client.create_collection_simple("my_collection", 128, "cosine")
+
+# Insert some vectors
+vector = np.random.random(128)
+client.insert_simple("my_collection", "vector_1", vector)
+
+# Search for similar vectors
+query = np.random.random(128)
+results = client.search_simple("my_collection", query, limit=5)
+
+print(f"Found {len(results)} similar vectors")
+for result in results:
+    print(f"  - ID: {result.id}, Distance: {result.distance:.4f}")
+
+client.close()
 ```
 
 ## 🏃 **Quick Start**
