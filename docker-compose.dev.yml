@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  d-vecdb:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        - RUST_VERSION=1.70
+    volumes:
+      - .:/app
+      - target_cache:/app/target
+      - registry_cache:/usr/local/cargo/registry
+    environment:
+      - RUST_LOG=debug
+      - CARGO_INCREMENTAL=1
+    command: ["cargo", "run", "--bin", "vectordb-server"]
+    develop:
+      watch:
+        - action: rebuild
+          path: ./src
+        - action: rebuild
+          path: ./Cargo.toml
+
+volumes:
+  target_cache:
+  registry_cache:

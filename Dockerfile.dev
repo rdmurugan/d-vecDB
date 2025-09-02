@@ -1,0 +1,34 @@
+# Development Dockerfile with hot reloading
+ARG RUST_VERSION=1.70
+FROM rust:${RUST_VERSION}-slim
+
+# Install development dependencies
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libssl-dev \
+    protobuf-compiler \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install cargo-watch for hot reloading
+RUN cargo install cargo-watch
+
+WORKDIR /app
+
+# Copy dependency files first for better caching
+COPY Cargo.toml Cargo.lock ./
+COPY */Cargo.toml ./
+
+# Create dummy source files to build dependencies
+RUN mkdir -p src && echo "fn main() {}" > src/main.rs
+RUN cargo build --release && rm -rf src
+
+# Copy source code
+COPY . .
+
+# Expose ports
+EXPOSE 8080 9090 9091
+
+# Default development command with hot reloading
+CMD ["cargo", "watch", "-x", "run --bin vectordb-server"]

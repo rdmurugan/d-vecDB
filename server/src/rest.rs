@@ -13,7 +13,6 @@ use serde::{Deserialize, Serialize};
 use tracing::{info, error, instrument};
 use uuid::Uuid;
 use std::net::SocketAddr;
-use tower_http::{cors::CorsLayer, trace::TraceLayer};
 
 /// REST API response wrapper
 #[derive(Serialize)]
@@ -343,8 +342,6 @@ pub fn create_router(state: AppState) -> Router {
         .route("/health", get(health))
         
         .with_state(state)
-        .layer(CorsLayer::permissive())
-        .layer(TraceLayer::new_for_http())
 }
 
 /// Start the REST server

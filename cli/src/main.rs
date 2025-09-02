@@ -1,12 +1,8 @@
 use vectordb_client::{ClientBuilder, VectorDbClient};
 use vectordb_common::types::*;
 use clap::{Arg, Command, ArgMatches};
-use std::collections::HashMap;
-use std::path::PathBuf;
 use anyhow::{Result, Context};
-use tracing::{info, error};
 use tabled::{Table, Tabled};
-use indicatif::{ProgressBar, ProgressStyle};
 use colored::*;
 use uuid::Uuid;
 

@@ -5,17 +5,13 @@ use vectordb_proto::{
     InsertRequest, InsertResponse, BatchInsertRequest, BatchInsertResponse,
     DeleteRequest, DeleteResponse, QueryRequest, QueryResponse, QueryResult,
     UpdateRequest, UpdateResponse, GetStatsRequest, GetStatsResponse,
-    HealthRequest, HealthResponse, CollectionStats, ServerStats, Vector
+    HealthRequest, HealthResponse
 };
 use vectordb_vectorstore::VectorStore;
-use vectordb_common::types::{
-    CollectionConfig, IndexConfig, VectorId, CollectionId, 
-    DistanceMetric as CommonDistanceMetric, VectorType as CommonVectorType
-};
 use std::sync::Arc;
 use std::collections::HashMap;
-use tonic::{Request, Response, Status, Code};
-use tracing::{info, warn, error, instrument};
+use tonic::{Request, Response, Status};
+use tracing::{info, error, instrument};
 use uuid::Uuid;
 use std::net::SocketAddr;
 
@@ -43,13 +39,13 @@ impl VectorDb for VectorDbService {
             Status::invalid_argument("Collection config is required")
         })?;
         
-        let collection_config = CollectionConfig {
-            name: config.name,
+        let collection_config = vectordb_common::types::CollectionConfig {
+            name: config.name.clone(),
             dimension: config.dimension as usize,
             distance_metric: config.distance_metric().into(),
             vector_type: config.vector_type().into(),
-            index_config: config.index_config.map_or(IndexConfig::default(), |ic| {
-                IndexConfig {
+            index_config: config.index_config.map_or(vectordb_common::types::IndexConfig::default(), |ic| {
+                vectordb_common::types::IndexConfig {
                     max_connections: ic.max_connections as usize,
                     ef_construction: ic.ef_construction as usize,
                     ef_search: ic.ef_search as usize,
@@ -132,12 +128,12 @@ impl VectorDb for VectorDbService {
             Err(e) => return Err(Status::internal(e.to_string())),
         };
         
-        let proto_config = CollectionConfig {
+        let proto_config = vectordb_proto::CollectionConfig {
             name: config.name,
             dimension: config.dimension as u32,
             distance_metric: config.distance_metric.into(),
             vector_type: config.vector_type.into(),
-            index_config: Some(IndexConfig {
+            index_config: Some(vectordb_proto::IndexConfig {
                 max_connections: config.index_config.max_connections as u32,
                 ef_construction: config.index_config.ef_construction as u32,
                 ef_search: config.index_config.ef_search as u32,
@@ -145,7 +141,7 @@ impl VectorDb for VectorDbService {
             }),
         };
         
-        let proto_stats = CollectionStats {
+        let proto_stats = vectordb_proto::CollectionStats {
             name: stats.name,
             vector_count: stats.vector_count as u64,
             dimension: stats.dimension as u32,
@@ -185,7 +181,7 @@ impl VectorDb for VectorDbService {
             )
         };
         
-        let vector = Vector {
+        let vector = vectordb_common::types::Vector {
             id: vector_id,
             data: vector_proto.data,
             metadata,
@@ -233,7 +229,7 @@ impl VectorDb for VectorDbService {
                 )
             };
             
-            vectors.push(Vector {
+            vectors.push(vectordb_common::types::Vector {
                 id: vector_id,
                 data: vector_proto.data,
                 metadata,
@@ -375,7 +371,7 @@ impl VectorDb for VectorDbService {
             )
         };
         
-        let vector = Vector {
+        let vector = vectordb_common::types::Vector {
             id: vector_id,
             data: vector_proto.data,
             metadata,
@@ -405,7 +401,7 @@ impl VectorDb for VectorDbService {
     ) -> Result<Response<GetStatsResponse>, Status> {
         match self.store.get_server_stats().await {
             Ok(stats) => {
-                let proto_stats = ServerStats {
+                let proto_stats = vectordb_proto::ServerStats {
                     total_vectors: stats.total_vectors,
                     total_collections: stats.total_collections,
                     memory_usage: stats.memory_usage,

@@ -1,7 +1,6 @@
 use vectordb_common::{Result, VectorDbError};
 use std::path::{Path, PathBuf};
 use std::fs::{File, OpenOptions};
-use std::io::Write;
 use memmap2::{MmapMut, MmapOptions};
 use parking_lot::Mutex;
 
@@ -55,27 +54,31 @@ impl MMapStorage {
     
     /// Append data to the storage
     pub async fn append(&self, data: &[u8]) -> Result<u64> {
-        let mut position = self.position.lock();
-        let mut size = self.size.lock();
+        let (current_position, need_grow) = {
+            let position = self.position.lock();
+            let size = self.size.lock();
+            (*position, *position + data.len() as u64 > *size)
+        };
         
         // Check if we need to grow the file
-        if *position + data.len() as u64 > *size {
-            self.grow((*position + data.len() as u64) * 2).await?;
-            *size = self.size.lock().clone(); // Update local size
+        if need_grow {
+            self.grow((current_position + data.len() as u64) * 2).await?;
         }
         
-        // Write data to memory map
-        {
+        // Write data to memory map and update position
+        let old_position = {
+            let mut position = self.position.lock();
             let mut mmap_guard = self.mmap.lock();
             if let Some(mmap) = mmap_guard.as_mut() {
                 let start = *position as usize;
                 let end = start + data.len();
                 mmap[start..end].copy_from_slice(data);
             }
-        }
-        
-        let old_position = *position;
-        *position += data.len() as u64;
+            
+            let old_position = *position;
+            *position += data.len() as u64;
+            old_position
+        };
         
         Ok(old_position)
     }

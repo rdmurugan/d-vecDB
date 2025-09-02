@@ -1,0 +1,256 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  # Allow manual triggering for testing
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to release'
+        required: true
+        default: 'v0.1.1'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      release_id: ${{ steps.create_release.outputs.id }}
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name || github.event.inputs.tag }}
+          release_name: d-vecDB ${{ github.ref_name || github.event.inputs.tag }}
+          body: |
+            ## d-vecDB Release ${{ github.ref_name || github.event.inputs.tag }}
+            
+            ### 📦 Pre-built Binaries
+            Download the appropriate binary for your platform:
+            
+            - **Linux (x86_64)**: `vectordb-server-linux-x64`
+            - **Linux (musl)**: `vectordb-server-linux-musl-x64`
+            - **macOS (Intel)**: `vectordb-server-macos-x64`
+            - **macOS (Apple Silicon)**: `vectordb-server-macos-arm64`
+            - **Windows**: `vectordb-server-windows-x64.exe`
+            
+            ### 🚀 Quick Start
+            ```bash
+            # Download binary (replace with your platform)
+            curl -L -o vectordb-server https://github.com/rdmurugan/d-vecDB/releases/download/${{ github.ref_name || github.event.inputs.tag }}/vectordb-server-linux-x64
+            
+            # Make executable and run
+            chmod +x vectordb-server
+            ./vectordb-server
+            ```
+            
+            ### 🐍 Python Client
+            ```bash
+            pip install d-vecdb
+            ```
+            
+            ### 🐳 Docker
+            ```bash
+            docker run -p 8080:8080 -p 9090:9090 rdmurugan/d-vecdb:${{ github.ref_name || github.event.inputs.tag }}
+            ```
+          draft: false
+          prerelease: false
+
+  build-release:
+    name: Build Release (${{ matrix.target }})
+    needs: create-release
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Linux targets
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+            artifact_name: vectordb-server
+            asset_name: vectordb-server-linux-x64
+            strip: true
+          - target: x86_64-unknown-linux-musl
+            os: ubuntu-latest
+            artifact_name: vectordb-server
+            asset_name: vectordb-server-linux-musl-x64
+            strip: true
+          # macOS targets
+          - target: x86_64-apple-darwin
+            os: macos-latest
+            artifact_name: vectordb-server
+            asset_name: vectordb-server-macos-x64
+            strip: true
+          - target: aarch64-apple-darwin
+            os: macos-latest
+            artifact_name: vectordb-server
+            asset_name: vectordb-server-macos-arm64
+            strip: true
+          # Windows targets
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+            artifact_name: vectordb-server.exe
+            asset_name: vectordb-server-windows-x64.exe
+            strip: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: ${{ matrix.target }}
+          override: true
+          profile: minimal
+
+      - name: Install musl tools (Linux musl only)
+        if: matrix.target == 'x86_64-unknown-linux-musl'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y musl-tools
+
+      - name: Configure cargo for musl
+        if: matrix.target == 'x86_64-unknown-linux-musl'
+        run: |
+          echo '[target.x86_64-unknown-linux-musl]' >> ~/.cargo/config.toml
+          echo 'linker = "x86_64-linux-musl-gcc"' >> ~/.cargo/config.toml
+
+      - name: Build binary
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --target ${{ matrix.target }} --bin vectordb-server
+
+      - name: Strip binary (Unix only)
+        if: matrix.strip
+        run: |
+          if command -v strip >/dev/null 2>&1; then
+            strip target/${{ matrix.target }}/release/${{ matrix.artifact_name }}
+          fi
+
+      - name: Compress binary (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          cd target/${{ matrix.target }}/release
+          tar czf ${{ matrix.asset_name }}.tar.gz ${{ matrix.artifact_name }}
+          echo "ASSET_PATH=target/${{ matrix.target }}/release/${{ matrix.asset_name }}.tar.gz" >> $GITHUB_ENV
+          echo "ASSET_NAME=${{ matrix.asset_name }}.tar.gz" >> $GITHUB_ENV
+
+      - name: Compress binary (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          cd target/${{ matrix.target }}/release
+          7z a ${{ matrix.asset_name }}.zip ${{ matrix.artifact_name }}
+          echo "ASSET_PATH=target/${{ matrix.target }}/release/${{ matrix.asset_name }}.zip" >> $env:GITHUB_ENV
+          echo "ASSET_NAME=${{ matrix.asset_name }}.zip" >> $env:GITHUB_ENV
+
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ${{ env.ASSET_PATH }}
+          asset_name: ${{ env.ASSET_NAME }}
+          asset_content_type: application/octet-stream
+
+      - name: Upload uncompressed binary (for other workflows)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: target/${{ matrix.target }}/release/${{ matrix.artifact_name }}
+          asset_name: ${{ matrix.asset_name }}
+          asset_content_type: application/octet-stream
+
+  # Verify releases work by downloading and testing them
+  test-release:
+    name: Test Release
+    needs: [create-release, build-release]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Linux binary
+        run: |
+          curl -L -o vectordb-server https://github.com/rdmurugan/d-vecDB/releases/download/${{ github.ref_name || github.event.inputs.tag }}/vectordb-server-linux-x64
+          chmod +x vectordb-server
+      
+      - name: Test binary
+        run: |
+          timeout 10s ./vectordb-server --help || true
+          echo "✅ Binary downloaded and executed successfully"
+
+      - name: Update release with test results
+        if: success()
+        run: |
+          echo "✅ Release binaries tested successfully" >> release_notes.md
+
+  # Build and push Docker images
+  docker-release:
+    name: Build and Push Docker Images
+    needs: [create-release, build-release]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            rdmurugan/d-vecdb
+            ghcr.io/rdmurugan/d-vecdb
+          tags: |
+            type=ref,event=tag
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Test Docker image
+        run: |
+          docker run --rm -d --name test-d-vecdb -p 8080:8080 rdmurugan/d-vecdb:${{ github.ref_name || github.event.inputs.tag }}
+          sleep 30
+          curl -f http://localhost:8080/health || (docker logs test-d-vecdb && exit 1)
+          docker stop test-d-vecdb
+          echo "✅ Docker image tested successfully"

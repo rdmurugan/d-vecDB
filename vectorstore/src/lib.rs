@@ -4,7 +4,6 @@ use vectordb_storage::StorageEngine;
 use vectordb_index::{VectorIndex, HnswIndex};
 use std::collections::HashMap;
 use parking_lot::RwLock;
-use uuid::Uuid;
 use tracing::info;
 use metrics::{counter, histogram, gauge};
 
@@ -304,7 +303,7 @@ impl VectorStore {
 }
 
 /// Server statistics
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize)]
 pub struct ServerStats {
     pub total_vectors: u64,
     pub total_collections: u32,
