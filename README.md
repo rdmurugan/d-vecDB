@@ -116,8 +116,6 @@ Based on our benchmark results, here are conservative performance extrapolations
 # Install d-vecDB Python client library
 pip install d-vecdb
 
-# Or install with development extras
-pip install d-vecdb[dev,docs,examples]
 ```
 
 **After installation, you have access to:**
