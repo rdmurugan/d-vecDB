@@ -26,6 +26,8 @@ pip install d-vecdb-server
 d-vecdb-server version
 ```
 
+> **Note**: The package is available on PyPI and can be installed directly.
+
 ### Option 2: Development Installation
 
 ```bash
@@ -40,7 +42,7 @@ pip install -e .
 d-vecdb-server version
 ```
 
-### Option 3: Virtual Environment Installation
+### Option 3: Virtual Environment Installation (Recommended for Development)
 
 ```bash
 # Create virtual environment
@@ -59,11 +61,15 @@ pip install d-vecdb-server
 d-vecdb-server version
 ```
 
-### Option 4: Install with Client Support
+### Option 4: Install with Python Client
 
 ```bash
-# Install server with Python client for complete functionality
-pip install d-vecdb-server[client]
+# Install server with Python client for complete functionality  
+pip install 'd-vecdb-server[client]'
+
+# Or install separately
+pip install d-vecdb-server
+pip install d-vecdb  # Python client library
 ```
 
 ## Quick Start
@@ -406,12 +412,15 @@ sudo systemctl status d-vecdb
 
 **Binary Not Found:**
 ```bash
-# Check if binary was downloaded during installation
+# Check if binary wrapper is available
 python -c "from d_vecdb_server import DVecDBServer; print(DVecDBServer()._binary_path)"
 
 # If binary missing, reinstall
 pip uninstall d-vecdb-server
 pip install d-vecdb-server
+
+# Note: The package provides a Python wrapper, not a native Rust binary
+# The actual server binary needs to be built separately or downloaded
 ```
 
 **Permission Denied:**
@@ -491,12 +500,44 @@ hnsw_ef_construction = 200
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## Using with Python Client
+
+After installing the server, you can use it with the Python client:
+
+```bash
+# Install the Python client
+pip install d-vecdb
+```
+
+```python
+from d_vecdb_server import DVecDBServer
+from d_vecdb import VectorDBClient
+import numpy as np
+
+# Start the server
+with DVecDBServer(port=8080) as server:
+    # Connect client
+    client = VectorDBClient(host=server.host, port=server.port)
+    
+    # Create collection
+    client.create_collection_simple("documents", 128, "cosine")
+    
+    # Insert vectors
+    vector = np.random.random(128)
+    client.insert_simple("documents", "doc1", vector)
+    
+    # Search
+    query = np.random.random(128)
+    results = client.search_simple("documents", query, limit=5)
+    print(f"Found {len(results)} similar vectors")
+```
+
 ## Next Steps
 
 After installation and configuration:
 
 1. **Start using the REST API**: Visit `http://localhost:8080/docs` for API documentation
-2. **Install Python client**: `pip install d-vecdb` for Python integration
+2. **Use Python client**: See example above for Python integration
 3. **Check examples**: See the main repository for usage examples
 4. **Join community**: Report issues and get support
 
