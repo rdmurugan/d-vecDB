@@ -1,17 +1,8 @@
 # VectorDB-RS Python Client
 
-[![PyPI version](https://badge.fury.io/py/vectordb-client.svg)](https://badge.fury.io/py/vectordb-client)
-[![PyPI downloads](https://img.shields.io/pypi/dm/vectordb-client.svg)](https://pypi.org/project/vectordb-client/)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://github.com/your-org/d-vecDB/workflows/Python%20Client%20Tests/badge.svg)](https://github.com/your-org/d-vecDB/actions)
-[![Coverage Status](https://codecov.io/gh/your-org/d-vecDB/branch/main/graph/badge.svg)](https://codecov.io/gh/your-org/d-vecDB)
-[![Documentation Status](https://readthedocs.org/projects/vectordb-rs/badge/?version=latest)](https://vectordb-rs.readthedocs.io/en/latest/?badge=latest)
+[![License: Enterprise](https://img.shields.io/badge/License-Enterprise-red.svg)](../LICENSE)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
-[![Type checked: mypy](https://img.shields.io/badge/type%20checked-mypy-blue.svg)](http://mypy-lang.org/)
-[![Security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
-[![Pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
 A comprehensive Python client library for [VectorDB-RS](https://github.com/your-org/d-vecDB), providing both synchronous and asynchronous interfaces for vector database operations.
 
@@ -565,7 +556,9 @@ We welcome contributions! Please see our [Contributing Guide](../CONTRIBUTING.md
 
 ## 📄 **License**
 
-This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.
+This project is licensed under the d-vecDB Enterprise License - see the [LICENSE](../LICENSE) file for details.
+
+**For Enterprise Use**: Commercial usage requires a separate enterprise license. Contact durai@infinidatum.com for licensing terms.
 
 ## 🆘 **Support**
 
