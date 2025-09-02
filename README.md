@@ -1,8 +1,15 @@
 # 🚀 VectorDB-RS
 
-[![Rust](https://img.shields.io/badge/rust-stable-brightgreen.svg)](https://rustup.rs/)
-[![Build Status](https://img.shields.io/badge/build-passing-green)](https://github.com/your-org/d-vecDB)
+[![Build Status](https://github.com/your-org/d-vecDB/workflows/CI/badge.svg)](https://github.com/your-org/d-vecDB/actions)
+[![Rust Version](https://img.shields.io/badge/rust-1.70+-brightgreen.svg)](https://rustup.rs/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Docker](https://img.shields.io/badge/docker-supported-blue.svg)](https://hub.docker.com/r/vectordb/vectordb-rs)
+[![Crates.io](https://img.shields.io/crates/v/vectordb-rs.svg)](https://crates.io/crates/vectordb-rs)
+[![Downloads](https://img.shields.io/crates/d/vectordb-rs.svg)](https://crates.io/crates/vectordb-rs)
+[![Documentation](https://docs.rs/vectordb-rs/badge.svg)](https://docs.rs/vectordb-rs)
+[![Coverage](https://codecov.io/gh/your-org/d-vecDB/branch/main/graph/badge.svg)](https://codecov.io/gh/your-org/d-vecDB)
+[![Security Audit](https://img.shields.io/badge/security-audit-passing-green.svg)](https://github.com/your-org/d-vecDB/security)
+[![Performance](https://img.shields.io/badge/performance-35M+%20ops%2Fs-orange.svg)](#-performance-benchmarks)
 
 **A high-performance, production-ready vector database written in Rust**
 
@@ -111,6 +118,13 @@ Based on our benchmark results, here are conservative performance extrapolations
 
 ### **Installation**
 
+**Option 1: Python Client (Recommended for most users)**
+```bash
+# Install the Python client
+pip install vectordb-client
+```
+
+**Option 2: From Source (For development or custom builds)**
 ```bash
 # Clone the repository
 git clone https://github.com/your-org/d-vecDB.git
@@ -204,11 +218,63 @@ d-vecDB/
 ├── storage/         # WAL, memory-mapping, persistence
 ├── vectorstore/     # Main vector store engine
 ├── server/          # REST & gRPC API servers
-├── client/          # Client SDKs and libraries
+├── python-client/   # 🐍 Official Python client library
+├── client/          # Additional client SDKs and libraries
 ├── cli/             # Command-line tools
 ├── proto/           # Protocol Buffer definitions
 └── benchmarks/      # Performance testing suite
 ```
+
+---
+
+## 📚 **Client Libraries**
+
+VectorDB-RS provides official client libraries for multiple programming languages:
+
+### 🐍 **Python Client**
+[![PyPI version](https://badge.fury.io/py/vectordb-client.svg)](https://badge.fury.io/py/vectordb-client)
+[![PyPI downloads](https://img.shields.io/pypi/dm/vectordb-client.svg)](https://pypi.org/project/vectordb-client/)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+
+**Full-featured Python client with async support, NumPy integration, and type safety.**
+
+- 🔄 **Sync & Async**: Both synchronous and asynchronous clients
+- ⚡ **High Performance**: Concurrent batch operations (1000+ vectors/sec)
+- 🧮 **NumPy Native**: Direct NumPy array support
+- 🔒 **Type Safe**: Pydantic models with validation
+- 🌐 **Multi-Protocol**: REST and gRPC support
+
+```bash
+# Install from PyPI
+pip install vectordb-client
+
+# Quick usage
+from vectordb_client import VectorDBClient
+import numpy as np
+
+client = VectorDBClient()
+client.create_collection_simple("docs", 384, "cosine")
+client.insert_simple("docs", "doc_1", np.random.random(384))
+results = client.search_simple("docs", np.random.random(384), limit=5)
+```
+
+**📖 [Complete Python Documentation →](python-client/README.md)**
+
+### 🦀 **Rust Client** *(Native)*
+[![Crates.io](https://img.shields.io/crates/v/vectordb-rs.svg)](https://crates.io/crates/vectordb-rs)
+
+Direct access to the native Rust API for maximum performance.
+
+### 🌐 **HTTP/REST API**
+Language-agnostic REST API with OpenAPI specification.
+
+**📖 [API Documentation →](docs/api.md)**
+
+### 🚧 **Coming Soon**
+- **JavaScript/TypeScript** client
+- **Go** client  
+- **Java** client
+- **C++** bindings
 
 ---
 
