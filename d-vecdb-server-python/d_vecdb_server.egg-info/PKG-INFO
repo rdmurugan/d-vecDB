@@ -119,6 +119,10 @@ pip install d-vecdb  # Python client library
 ### Command Line Usage
 
 ```bash
+# Show version and check if binary is available
+d-vecdb-server version
+
+# After installing the d-vecDB server binary:
 # Start the server (foreground)
 d-vecdb-server start
 
@@ -133,9 +137,6 @@ d-vecdb-server stop
 
 # Check server status
 d-vecdb-server status
-
-# Show version
-d-vecdb-server version
 ```
 
 ### Python API

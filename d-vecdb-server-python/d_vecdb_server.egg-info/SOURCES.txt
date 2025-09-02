@@ -11,3 +11,4 @@ d_vecdb_server.egg-info/entry_points.txt
 d_vecdb_server.egg-info/not-zip-safe
 d_vecdb_server.egg-info/requires.txt
 d_vecdb_server.egg-info/top_level.txt
+d_vecdb_server/binaries/vectordb-server

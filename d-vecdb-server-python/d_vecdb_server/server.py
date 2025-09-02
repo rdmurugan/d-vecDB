@@ -111,24 +111,13 @@ class DVecDBServer:
         config_content = f"""
 [server]
 host = "{self.host}"
-port = {self.port}
+rest_port = {self.port}
 grpc_port = {self.grpc_port}
-workers = 4
+metrics_port = 9091
+log_level = "{self.log_level}"
 
 [storage]
 data_dir = "{self.data_dir}"
-wal_sync_interval = "1s"
-memory_map_size = "512MB"
-
-[index]
-hnsw_max_connections = 16
-hnsw_ef_construction = 200
-hnsw_max_layer = 16
-
-[monitoring]
-enable_metrics = true
-prometheus_port = 9091
-log_level = "{self.log_level}"
 """
         
         # Create temporary config file
@@ -160,17 +149,23 @@ log_level = "{self.log_level}"
         # Create data directory if it doesn't exist
         os.makedirs(self.data_dir, exist_ok=True)
         
-        # Create config file if not provided
-        config_path = self.config_file
-        if not config_path:
-            config_path = self._create_config()
-            self._temp_config = config_path
-        
-        # Build command
-        cmd = [
-            str(self._binary_path),
-            "--config", config_path,
-        ]
+        # Build command 
+        if self.config_file:
+            # Use config file if provided
+            cmd = [
+                str(self._binary_path),
+                "--config", self.config_file,
+            ]
+        else:
+            # Use direct arguments
+            cmd = [
+                str(self._binary_path),
+                "--host", self.host,
+                "--rest-port", str(self.port),
+                "--grpc-port", str(self.grpc_port),
+                "--data-dir", self.data_dir,
+                "--log-level", self.log_level,
+            ]
         
         logger.info(f"Starting d-vecDB server: {' '.join(cmd)}")
         
