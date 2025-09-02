@@ -66,21 +66,25 @@ pip install -e .
 
 ## 🚀 **Getting Started After Installation**
 
-### **Step 1: Start the d-vecDB Server**
+### **Step 1: Build and Start the d-vecDB Server**
 
-After installing `d-vecdb`, you can start the server:
+**Important**: The PyPI package (`pip install d-vecdb`) only includes the Python client library. You need to build the server separately:
 
 ```bash
-# Start the server (available after pip install d-vecdb)
-d-vecdb-server
+# Clone the repository and build the server
+git clone https://github.com/rdmurugan/d-vecDB.git
+cd d-vecDB
 
-# Or with custom settings
-d-vecdb-server --host 0.0.0.0 --port 8080 --log-level info
+# Build the server (requires Rust)
+cargo build --release
+
+# Start the server
+./target/release/vectordb-server --config config.toml
 ```
 
 ### **Step 2: Use the Python Client**
 
-Now you can use the Python client to interact with your d-vecDB server:
+Once you have a running d-vecDB server, you can use the Python client (installed via pip) to interact with it:
 
 ```python
 import numpy as np

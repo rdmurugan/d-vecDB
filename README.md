@@ -111,9 +111,9 @@ Based on our benchmark results, here are conservative performance extrapolations
 
 ### **Installation**
 
-**Option 1: Install from PyPI (Recommended)**
+**Option 1: Install Python Client from PyPI**
 ```bash
-# Install d-vecDB with Python client
+# Install d-vecDB Python client library
 pip install d-vecdb
 
 # Or install with development extras
@@ -121,9 +121,10 @@ pip install d-vecdb[dev,docs,examples]
 ```
 
 **After installation, you have access to:**
-- **Python client library**: `vectordb_client` for programmatic access
-- **Command-line tools**: `d-vecdb-server`, `d-vecdb-cli` for server management
+- **Python client library**: `vectordb_client` for connecting to d-vecDB servers
 - **Example scripts**: Located in your Python site-packages
+
+**Note**: This installs only the Python client library. You need to build the server from source (see below).
 
 **Option 2: Install from Source**
 ```bash
@@ -159,28 +160,31 @@ source venv/bin/activate  # Linux/macOS
 # venv\Scripts\activate   # Windows
 ```
 
-### **Getting Started After `pip install d-vecdb`**
+### **Getting Started**
 
-**Step 1: Start the d-vecDB Server**
+**Step 1: Build and Start the d-vecDB Server**
+
+Since `pip install d-vecdb` only provides the Python client, you need to build the server from source:
+
 ```bash
-# Start with default configuration (after pip install)
-d-vecdb-server
+# Clone the repository and build the server
+git clone https://github.com/rdmurugan/d-vecDB.git
+cd d-vecDB
 
-# Or with custom settings
-d-vecdb-server \
-  --host 0.0.0.0 \
-  --port 8080 \
-  --data-dir /path/to/data \
-  --log-level info
+# Build the server (requires Rust)
+cargo build --release
+
+# Start the server
+./target/release/vectordb-server --config config.toml
 ```
 
-**Step 2: Use the Python Client**
+**Step 2: Use the Python Client (after pip install)**
 ```python
-# Import the client library
+# Import the client library (available after pip install d-vecdb)
 from vectordb_client import VectorDBClient
 import numpy as np
 
-# Connect to the server
+# Connect to the server you built and started in Step 1
 client = VectorDBClient(host="localhost", port=8080)
 
 # Create your first collection
@@ -196,19 +200,6 @@ results = client.search_simple("my_vectors", query_vector, limit=5)
 print(f"Found {len(results)} similar vectors")
 ```
 
-### **Alternative: Start Server from Source**
-
-```bash
-# Start with default configuration (from source build)
-./target/release/vectordb-server --config config.toml
-
-# Or with custom settings
-./target/release/vectordb-server \
-  --host 0.0.0.0 \
-  --port 8080 \
-  --data-dir /path/to/data \
-  --log-level info
-```
 
 ### **REST API Usage**
 
