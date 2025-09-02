@@ -52,7 +52,7 @@ def cmd_start(args):
     print()
     
     try:
-        if args.daemon:
+        if hasattr(args, 'daemon') and args.daemon:
             # Start in background
             if server.start(background=True):
                 print("✅ Server started successfully in background")
@@ -185,21 +185,26 @@ def cmd_version(args):
     
     print(f"d-vecDB Server Python Package v{__version__}")
     
-    # Try to get binary version
-    server = DVecDBServer()
-    if server._binary_path:
-        print(f"Binary location: {server._binary_path}")
-        
-        try:
-            import subprocess
-            result = subprocess.run([str(server._binary_path), "--version"], 
-                                  capture_output=True, text=True, timeout=5)
-            if result.returncode == 0:
-                print(f"Binary version: {result.stdout.strip()}")
-        except Exception:
-            pass
-    else:
-        print("Binary: Not found")
+    # Try to get binary version without failing
+    try:
+        server = DVecDBServer()
+        if server._binary_path:
+            print(f"Binary location: {server._binary_path}")
+            
+            try:
+                import subprocess
+                result = subprocess.run([str(server._binary_path), "--version"], 
+                                      capture_output=True, text=True, timeout=5)
+                if result.returncode == 0:
+                    print(f"Binary version: {result.stdout.strip()}")
+                else:
+                    print("Binary: Found but version check failed")
+            except Exception:
+                print("Binary: Found but not accessible")
+        else:
+            print("Binary: Not found")
+    except RuntimeError as e:
+        print(f"Binary: Not available - {str(e)}")
     
     return 0
 
@@ -261,8 +266,12 @@ Examples:
     args = parser.parse_args()
     
     # Handle commands
-    if args.command == "start" or args.command is None:
+    if args.command == "start":
         return cmd_start(args)
+    elif args.command is None:
+        # No subcommand provided, show help
+        parser.print_help()
+        return 1
     elif args.command == "stop":
         return cmd_stop(args)
     elif args.command == "status":

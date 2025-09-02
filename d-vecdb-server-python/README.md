@@ -4,11 +4,14 @@
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A Python package that provides the d-vecDB server with embedded pre-built binaries for multiple platforms. This package allows you to run the high-performance d-vecDB vector database server directly from Python without requiring Rust toolchain or manual compilation.
+A Python package that provides a Python interface to manage the d-vecDB vector database server. This package provides command-line tools and Python API to control the d-vecDB server process.
+
+> **Note**: This package provides the management interface only. The actual d-vecDB server binary needs to be installed separately.
 
 ## Prerequisites
 
 - **Python**: 3.8 or higher
+- **d-vecDB Server Binary**: Install from GitHub releases or build from source
 - **Operating System**: Linux (x86_64), macOS (Intel/Apple Silicon), or Windows (x86_64)
 - **Memory**: Minimum 512MB RAM available
 - **Disk Space**: At least 100MB for binaries and data storage
@@ -26,7 +29,7 @@ pip install d-vecdb-server
 d-vecdb-server version
 ```
 
-> **Note**: The package is available on PyPI and can be installed directly.
+> **Note**: The package is available on PyPI. After installation, you'll need to install the d-vecDB server binary separately.\n\n### Installing the d-vecDB Server Binary\n\nAfter installing this package, you need to obtain the actual d-vecDB server binary:\n\n**Option 1: Download from Releases**\n```bash\n# Download the appropriate binary for your platform from:\n# https://github.com/rdmurugan/d-vecDB/releases\n\n# Place it in your PATH, for example:\nsudo cp vectordb-server /usr/local/bin/\nsudo chmod +x /usr/local/bin/vectordb-server\n```\n\n**Option 2: Build from Source**\n```bash\n# Clone and build the main project\ngit clone https://github.com/rdmurugan/d-vecDB.git\ncd d-vecDB\ncargo build --release\n\n# Copy the binary to your PATH\nsudo cp target/release/vectordb-server /usr/local/bin/\n```\n\n**Option 3: Use Docker**\n```bash\n# Alternative: Use the Docker version\ndocker run -p 8080:8080 -p 9090:9090 rdmurugan/d-vecdb:latest\n```
 
 ### Option 2: Development Installation
 
@@ -77,6 +80,10 @@ pip install d-vecdb  # Python client library
 ### Command Line Usage
 
 ```bash
+# Show version and check if binary is available
+d-vecdb-server version
+
+# After installing the d-vecDB server binary:
 # Start the server (foreground)
 d-vecdb-server start
 
@@ -91,9 +98,6 @@ d-vecdb-server stop
 
 # Check server status
 d-vecdb-server status
-
-# Show version
-d-vecdb-server version
 ```
 
 ### Python API
@@ -412,15 +416,20 @@ sudo systemctl status d-vecdb
 
 **Binary Not Found:**
 ```bash
-# Check if binary wrapper is available
-python -c "from d_vecdb_server import DVecDBServer; print(DVecDBServer()._binary_path)"
+# Check if binary is available
+python -c "from d_vecdb_server import DVecDBServer; print('Testing binary detection')"
 
-# If binary missing, reinstall
-pip uninstall d-vecdb-server
-pip install d-vecdb-server
+# If you get "d-vecDB server binary not found" error:
+# 1. Download from GitHub releases:
+#    https://github.com/rdmurugan/d-vecDB/releases
+# 2. Place binary in one of these locations:
+#    - ~/.local/bin/vectordb-server
+#    - /usr/local/bin/vectordb-server
+#    - /opt/homebrew/bin/vectordb-server
+# 3. Or build from source following the main repository instructions
 
-# Note: The package provides a Python wrapper, not a native Rust binary
-# The actual server binary needs to be built separately or downloaded
+# Make binary executable (Linux/macOS)
+chmod +x /path/to/vectordb-server
 ```
 
 **Permission Denied:**

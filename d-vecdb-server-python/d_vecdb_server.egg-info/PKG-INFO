@@ -43,28 +43,76 @@ Dynamic: requires-python
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A Python package that provides the d-vecDB server with embedded pre-built binaries for multiple platforms. This package allows you to run the high-performance d-vecDB vector database server directly from Python without requiring Rust toolchain or manual compilation.
+A Python package that provides a Python interface to manage the d-vecDB vector database server. This package provides command-line tools and Python API to control the d-vecDB server process.
 
-## Features
+> **Note**: This package provides the management interface only. The actual d-vecDB server binary needs to be installed separately.
 
-- 🚀 **One-command installation**: `pip install d-vecdb-server`
-- 📦 **Embedded binaries**: No need to build from source
-- 🌍 **Multi-platform**: Supports Linux, macOS (Intel & Apple Silicon), and Windows
-- 🐍 **Python integration**: Manage server lifecycle from Python code
-- 🛠️ **CLI tools**: Command-line interface for server management
-- ⚡ **High performance**: Same performance as native Rust binary
+## Prerequisites
 
-## Installation
+- **Python**: 3.8 or higher
+- **d-vecDB Server Binary**: Install from GitHub releases or build from source
+- **Operating System**: Linux (x86_64), macOS (Intel/Apple Silicon), or Windows (x86_64)
+- **Memory**: Minimum 512MB RAM available
+- **Disk Space**: At least 100MB for binaries and data storage
+- **Network**: Available ports for REST API (default: 8080) and gRPC (default: 9090)
+
+## Installation Options
+
+### Option 1: Standard Installation (Recommended)
 
 ```bash
+# Install the server package
 pip install d-vecdb-server
+
+# Verify installation
+d-vecdb-server version
 ```
 
-### Platform Support
+> **Note**: The package is available on PyPI. After installation, you'll need to install the d-vecDB server binary separately.\n\n### Installing the d-vecDB Server Binary\n\nAfter installing this package, you need to obtain the actual d-vecDB server binary:\n\n**Option 1: Download from Releases**\n```bash\n# Download the appropriate binary for your platform from:\n# https://github.com/rdmurugan/d-vecDB/releases\n\n# Place it in your PATH, for example:\nsudo cp vectordb-server /usr/local/bin/\nsudo chmod +x /usr/local/bin/vectordb-server\n```\n\n**Option 2: Build from Source**\n```bash\n# Clone and build the main project\ngit clone https://github.com/rdmurugan/d-vecDB.git\ncd d-vecDB\ncargo build --release\n\n# Copy the binary to your PATH\nsudo cp target/release/vectordb-server /usr/local/bin/\n```\n\n**Option 3: Use Docker**\n```bash\n# Alternative: Use the Docker version\ndocker run -p 8080:8080 -p 9090:9090 rdmurugan/d-vecdb:latest\n```
 
-- **Linux**: x86_64 (with musl for better compatibility)
-- **macOS**: Intel (x86_64) and Apple Silicon (ARM64)
-- **Windows**: x86_64
+### Option 2: Development Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/rdmurugan/d-vecDB.git
+cd d-vecDB/d-vecdb-server-python
+
+# Install in development mode
+pip install -e .
+
+# Verify installation
+d-vecdb-server version
+```
+
+### Option 3: Virtual Environment Installation (Recommended for Development)
+
+```bash
+# Create virtual environment
+python -m venv d-vecdb-env
+
+# Activate virtual environment
+# On Linux/macOS:
+source d-vecdb-env/bin/activate
+# On Windows:
+d-vecdb-env\Scripts\activate
+
+# Install package
+pip install d-vecdb-server
+
+# Verify installation
+d-vecdb-server version
+```
+
+### Option 4: Install with Python Client
+
+```bash
+# Install server with Python client for complete functionality  
+pip install 'd-vecdb-server[client]'
+
+# Or install separately
+pip install d-vecdb-server
+pip install d-vecdb  # Python client library
+```
 
 ## Quick Start
 
@@ -107,7 +155,7 @@ server.start()
 
 print(f"Server running: {server.is_running()}")
 print(f"REST API: http://{server.host}:{server.port}")
-print(f"Status: {server.get_status()}")
+print(f"gRPC API: {server.host}:{server.grpc_port}")
 
 # Stop the server
 server.stop()
@@ -121,84 +169,82 @@ from d_vecdb_server import DVecDBServer
 # Automatically start and stop server
 with DVecDBServer(port=8080) as server:
     print(f"Server is running on port {server.port}")
-    
-    # Use the server...
     # Server will be automatically stopped when exiting the context
-```
-
-## Python Client Integration
-
-Use with the d-vecDB Python client for complete functionality:
-
-```bash
-# Install server + client
-pip install d-vecdb-server[client]
-```
-
-```python
-from d_vecdb_server import DVecDBServer
-from vectordb_client import VectorDBClient
-import numpy as np
-
-# Start server
-server = DVecDBServer()
-server.start()
-
-try:
-    # Connect client
-    client = VectorDBClient(host=server.host, port=server.port)
-    
-    # Create collection
-    client.create_collection_simple("documents", 128, "cosine")
-    
-    # Insert vectors
-    vector = np.random.random(128)
-    client.insert_simple("documents", "doc1", vector)
-    
-    # Search
-    query = np.random.random(128)
-    results = client.search_simple("documents", query, limit=5)
-    
-    print(f"Found {len(results)} similar vectors")
-    
-finally:
-    # Stop server
-    server.stop()
 ```
 
 ## Configuration
 
-### Default Configuration
+### Step-by-Step Server Configuration
 
-The server uses sensible defaults:
+#### Step 1: Choose Your Configuration Method
 
-- **Host**: 127.0.0.1
-- **REST Port**: 8080  
-- **gRPC Port**: 9090
-- **Metrics Port**: 9091
+You can configure the server in three ways:
+1. **Command line arguments** (quick setup)
+2. **Python API parameters** (programmatic setup)
+3. **Configuration file** (persistent setup)
+
+#### Step 2: Basic Configuration
+
+**Default Configuration:**
+- **Host**: 127.0.0.1 (localhost only)
+- **REST Port**: 8080
+- **gRPC Port**: 9090  
 - **Data Directory**: Temporary directory (auto-generated)
 - **Log Level**: info
 
-### Custom Configuration
+#### Step 3: Create Data Directory (Optional)
 
-#### Via Python API
-
-```python
-server = DVecDBServer(
-    host="0.0.0.0",           # Listen on all interfaces
-    port=8081,                # Custom port
-    grpc_port=9091,           # Custom gRPC port  
-    data_dir="/path/to/data", # Persistent data directory
-    log_level="debug",        # Verbose logging
-    config_file="custom.toml" # Use external config file
-)
+```bash
+# Create persistent data directory
+mkdir -p /path/to/your/vector-data
+chmod 755 /path/to/your/vector-data
 ```
 
-#### Via Configuration File
+#### Step 4: Configuration Options
 
-Create a `config.toml` file:
+**Option A: Command Line Configuration**
 
-```toml
+```bash
+# Basic configuration
+d-vecdb-server start --host 0.0.0.0 --port 8081 --data-dir ./data
+
+# Advanced configuration
+d-vecdb-server start \
+  --host 0.0.0.0 \
+  --port 8081 \
+  --grpc-port 9091 \
+  --data-dir /path/to/data \
+  --log-level debug \
+  --daemon
+```
+
+**Option B: Python API Configuration**
+
+```python
+from d_vecdb_server import DVecDBServer
+
+# Basic configuration
+server = DVecDBServer(
+    host="0.0.0.0",           # Listen on all interfaces
+    port=8081,                # Custom REST port
+    grpc_port=9091,           # Custom gRPC port
+    data_dir="/path/to/data", # Persistent data directory
+    log_level="debug"         # Verbose logging
+)
+
+server.start()
+```
+
+**Option C: Configuration File Setup**
+
+1. Create a configuration file:
+
+```bash
+# Create config directory
+mkdir -p ~/.config/d-vecdb
+
+# Create configuration file
+cat > ~/.config/d-vecdb/server.toml << EOF
 [server]
 host = "0.0.0.0"
 port = 8080
@@ -206,7 +252,7 @@ grpc_port = 9090
 workers = 8
 
 [storage]
-data_dir = "./data"
+data_dir = "/path/to/your/data"
 wal_sync_interval = "1s"
 memory_map_size = "1GB"
 
@@ -219,12 +265,53 @@ hnsw_max_layer = 16
 enable_metrics = true
 prometheus_port = 9091
 log_level = "info"
+EOF
 ```
 
-Then use it:
+2. Use the configuration file:
 
 ```bash
-d-vecdb-server start --config config.toml
+# Start with configuration file
+d-vecdb-server start --config ~/.config/d-vecdb/server.toml
+```
+
+#### Step 5: Verify Configuration
+
+```bash
+# Check server status
+d-vecdb-server status
+
+# Test REST API endpoint
+curl http://localhost:8080/health
+
+# Check metrics (if enabled)
+curl http://localhost:9091/metrics
+```
+
+#### Step 6: Production Configuration Tips
+
+```toml
+# Production-ready configuration example
+[server]
+host = "0.0.0.0"          # Accept connections from any IP
+port = 8080               # Standard HTTP port
+grpc_port = 9090          # Standard gRPC port
+workers = 16              # Match CPU cores
+
+[storage]
+data_dir = "/var/lib/d-vecdb"  # Persistent storage location
+wal_sync_interval = "5s"       # Longer interval for better performance
+memory_map_size = "8GB"        # More memory for larger datasets
+
+[index]
+hnsw_max_connections = 64      # Higher connections for better recall
+hnsw_ef_construction = 800     # Higher construction for better quality
+hnsw_max_layer = 16           # Default is usually fine
+
+[monitoring]
+enable_metrics = true
+prometheus_port = 9091
+log_level = "warn"            # Less verbose for production
 ```
 
 ## API Reference
@@ -275,10 +362,9 @@ Commands:
   start    Start the server
   stop     Stop the server  
   status   Check server status
-  logs     Show server logs (placeholder)
   version  Show version information
 
-Global Options:
+Options:
   --host HOST           Server host (default: 127.0.0.1)
   --port PORT           REST API port (default: 8080)
   --grpc-port PORT      gRPC port (default: 9090)
@@ -290,157 +376,222 @@ Start Options:
   --daemon              Run in background
 ```
 
-## Examples
+## Platform Support
 
-### Basic Web Service
+- **Linux**: x86_64 (with musl for better compatibility)
+- **macOS**: Intel (x86_64) and Apple Silicon (ARM64)
+- **Windows**: x86_64
 
-```python
-from d_vecdb_server import DVecDBServer
-from flask import Flask, request, jsonify
-import numpy as np
+## Advanced Setup
 
-app = Flask(__name__)
+### Environment Variables
 
-# Start d-vecDB server
-server = DVecDBServer()
-server.start()
-
-@app.route('/search', methods=['POST'])
-def search_vectors():
-    # Your vector search logic here
-    return jsonify({"results": []})
-
-if __name__ == '__main__':
-    try:
-        app.run(port=5000)
-    finally:
-        server.stop()
-```
-
-### Testing with pytest
-
-```python
-import pytest
-from d_vecdb_server import DVecDBServer
-from vectordb_client import VectorDBClient
-
-@pytest.fixture
-def vector_server():
-    server = DVecDBServer()
-    server.start()
-    yield server
-    server.stop()
-
-def test_vector_operations(vector_server):
-    client = VectorDBClient(
-        host=vector_server.host, 
-        port=vector_server.port
-    )
-    
-    # Test collection creation
-    client.create_collection_simple("test", 64, "cosine")
-    
-    # Test vector insertion and search
-    # ... your tests
-```
-
-## Performance
-
-d-vecDB Server delivers exceptional performance:
-
-- **Vector Operations**: 35M+ operations/second
-- **Vector Insertion**: 7K+ vectors/second
-- **Vector Search**: 13K+ queries/second
-- **Sub-microsecond latency** for distance calculations
-
-Performance is identical to the native Rust binary since this package simply wraps the same optimized executable.
-
-## Monitoring
-
-The server exposes Prometheus metrics on port 9091:
+You can also configure the server using environment variables:
 
 ```bash
-# Check metrics
-curl http://localhost:9091/metrics
+# Set environment variables
+export DVECDB_HOST="0.0.0.0"
+export DVECDB_PORT="8080"
+export DVECDB_GRPC_PORT="9090"
+export DVECDB_DATA_DIR="/var/lib/d-vecdb"
+export DVECDB_LOG_LEVEL="info"
+export RUST_LOG="info"
+
+# Start server (will use environment variables)
+d-vecdb-server start
 ```
 
-Key metrics include:
-- `vectordb_operations_total`
-- `vectordb_vectors_total`  
-- `vectordb_memory_usage_bytes`
-- `vectordb_query_duration_seconds`
+### Docker Setup (Alternative)
+
+If you prefer Docker deployment:
+
+```bash
+# Pull the Docker image
+docker pull rdmurugan/d-vecdb:latest
+
+# Run with custom configuration
+docker run -d \
+  --name d-vecdb-server \
+  -p 8080:8080 \
+  -p 9090:9090 \
+  -v /path/to/data:/data \
+  rdmurugan/d-vecdb:latest
+```
+
+### Service Configuration (Linux)
+
+Create a systemd service for automatic startup:
+
+```bash
+# Create service file
+sudo cat > /etc/systemd/system/d-vecdb.service << EOF
+[Unit]
+Description=d-vecDB Vector Database Server
+After=network.target
+
+[Service]
+Type=simple
+User=d-vecdb
+Group=d-vecdb
+WorkingDirectory=/var/lib/d-vecdb
+ExecStart=/usr/local/bin/d-vecdb-server start --config /etc/d-vecdb/server.toml
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Enable and start service
+sudo systemctl enable d-vecdb
+sudo systemctl start d-vecdb
+sudo systemctl status d-vecdb
+```
 
 ## Troubleshooting
 
-### Binary Not Found
+### Installation Issues
 
-If the binary is not found during installation:
-
+**Binary Not Found:**
 ```bash
-# Check if binary exists
-python -c "from d_vecdb_server import DVecDBServer; print(DVecDBServer()._find_binary())"
+# Check if binary is available
+python -c "from d_vecdb_server import DVecDBServer; print('Testing binary detection')"
 
-# Manual download (if needed)
-python -c "
-import d_vecdb_server.server as srv
-srv.download_binary('0.1.1', srv.get_platform())
-"
+# If you get "d-vecDB server binary not found" error:
+# 1. Download from GitHub releases:
+#    https://github.com/rdmurugan/d-vecDB/releases
+# 2. Place binary in one of these locations:
+#    - ~/.local/bin/vectordb-server
+#    - /usr/local/bin/vectordb-server
+#    - /opt/homebrew/bin/vectordb-server
+# 3. Or build from source following the main repository instructions
+
+# Make binary executable (Linux/macOS)
+chmod +x /path/to/vectordb-server
 ```
 
-### Port Already in Use
-
-```python
-# Use different port
-server = DVecDBServer(port=8081)
-```
-
-### Permission Denied
-
+**Permission Denied:**
 ```bash
 # Install in user directory
 pip install --user d-vecdb-server
+
+# Or use virtual environment
+python -m venv venv && source venv/bin/activate
+pip install d-vecdb-server
 ```
 
-## Development
+### Runtime Issues
 
-### Building from Source
-
+**Port Already in Use:**
 ```bash
-git clone https://github.com/rdmurugan/d-vecDB.git
-cd d-vecDB/d-vecdb-server-python
+# Check what's using the port
+lsof -i :8080  # On Linux/macOS
+netstat -ano | findstr :8080  # On Windows
 
-# Install in development mode
-pip install -e .
-
-# Run tests
-python -m pytest
+# Use different port
+d-vecdb-server start --port 8081
 ```
 
-### Contributing
+**Server Won't Start:**
+```bash
+# Check server logs
+d-vecdb-server start  # Run in foreground to see errors
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
+# Check disk space
+df -h  # On Linux/macOS
+
+# Check permissions on data directory
+ls -la /path/to/data/directory
+```
+
+**Connection Refused:**
+```bash
+# Verify server is running
+d-vecdb-server status
+
+# Check if ports are accessible
+telnet localhost 8080
+
+# For remote connections, ensure host is set to 0.0.0.0
+d-vecdb-server start --host 0.0.0.0
+```
+
+### Performance Issues
+
+**Slow Performance:**
+```toml
+# Optimize configuration for better performance
+[storage]
+memory_map_size = "4GB"  # Increase based on available RAM
+
+[index]
+hnsw_max_connections = 64
+hnsw_ef_construction = 800
+
+[server]
+workers = 16  # Match your CPU cores
+```
+
+**High Memory Usage:**
+```toml
+# Reduce memory usage
+[storage]
+memory_map_size = "512MB"  # Reduce if needed
+
+[index]
+hnsw_max_connections = 16
+hnsw_ef_construction = 200
+```
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Using with Python Client
+
+After installing the server, you can use it with the Python client:
+
+```bash
+# Install the Python client
+pip install d-vecdb
+```
+
+```python
+from d_vecdb_server import DVecDBServer
+from d_vecdb import VectorDBClient
+import numpy as np
+
+# Start the server
+with DVecDBServer(port=8080) as server:
+    # Connect client
+    client = VectorDBClient(host=server.host, port=server.port)
+    
+    # Create collection
+    client.create_collection_simple("documents", 128, "cosine")
+    
+    # Insert vectors
+    vector = np.random.random(128)
+    client.insert_simple("documents", "doc1", vector)
+    
+    # Search
+    query = np.random.random(128)
+    results = client.search_simple("documents", query, limit=5)
+    print(f"Found {len(results)} similar vectors")
+```
+
+## Next Steps
+
+After installation and configuration:
+
+1. **Start using the REST API**: Visit `http://localhost:8080/docs` for API documentation
+2. **Use Python client**: See example above for Python integration
+3. **Check examples**: See the main repository for usage examples
+4. **Join community**: Report issues and get support
 
 ## Links
 
 - **Main Repository**: https://github.com/rdmurugan/d-vecDB
 - **Python Client**: https://pypi.org/project/d-vecdb/
 - **Docker Hub**: https://hub.docker.com/r/rdmurugan/d-vecdb
+- **Issues & Support**: https://github.com/rdmurugan/d-vecDB/issues
 - **Documentation**: https://github.com/rdmurugan/d-vecDB#readme
-
-## Support
-
-- **Issues**: https://github.com/rdmurugan/d-vecDB/issues
-- **Discussions**: https://github.com/rdmurugan/d-vecDB/discussions
-- **Email**: durai@infinidatum.com
-
----
-
-**Built with ❤️ by the d-vecDB team**

@@ -53,7 +53,12 @@ class DVecDBServer:
         # Find the binary
         self._binary_path = self._find_binary()
         if not self._binary_path:
-            raise RuntimeError("d-vecDB server binary not found")
+            raise RuntimeError(
+                "d-vecDB server binary not found. "
+                "The binary needs to be downloaded or built separately. "
+                "Check the GitHub releases at https://github.com/rdmurugan/d-vecDB/releases "
+                "or build from source."
+            )
     
     def _find_binary(self) -> Optional[Path]:
         """Find the d-vecDB server binary."""
@@ -73,11 +78,19 @@ class DVecDBServer:
         if binary_path.exists() and binary_path.is_file():
             return binary_path
         
-        # Check if binary is in PATH
+        # Check if binary is in PATH (but not the Python wrapper)
         import shutil
         system_binary = shutil.which("vectordb-server")
         if system_binary:
-            return Path(system_binary)
+            # Make sure it's not the Python wrapper script
+            try:
+                with open(system_binary, 'r') as f:
+                    first_line = f.readline()
+                    if not first_line.startswith('#!/') or 'python' not in first_line:
+                        return Path(system_binary)
+            except (IOError, UnicodeDecodeError):
+                # If it's not readable as text, it's likely a binary
+                return Path(system_binary)
         
         # Check common installation locations
         common_paths = [
