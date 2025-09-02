@@ -1,7 +1,6 @@
 # 🚀 VectorDB-RS
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Downloads](https://img.shields.io/crates/d/vectordb-rs.svg)](https://crates.io/crates/vectordb-rs)
 [![Documentation](https://docs.rs/vectordb-rs/badge.svg)](https://docs.rs/vectordb-rs)
 
 
