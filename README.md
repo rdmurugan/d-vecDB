@@ -1,15 +1,11 @@
 # 🚀 VectorDB-RS
 
-[![Build Status](https://github.com/your-org/d-vecDB/workflows/CI/badge.svg)](https://github.com/your-org/d-vecDB/actions)
-[![Rust Version](https://img.shields.io/badge/rust-1.70+-brightgreen.svg)](https://rustup.rs/)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Docker](https://img.shields.io/badge/docker-supported-blue.svg)](https://hub.docker.com/r/vectordb/vectordb-rs)
-[![Crates.io](https://img.shields.io/crates/v/vectordb-rs.svg)](https://crates.io/crates/vectordb-rs)
 [![Downloads](https://img.shields.io/crates/d/vectordb-rs.svg)](https://crates.io/crates/vectordb-rs)
 [![Documentation](https://docs.rs/vectordb-rs/badge.svg)](https://docs.rs/vectordb-rs)
-[![Coverage](https://codecov.io/gh/your-org/d-vecDB/branch/main/graph/badge.svg)](https://codecov.io/gh/your-org/d-vecDB)
-[![Security Audit](https://img.shields.io/badge/security-audit-passing-green.svg)](https://github.com/your-org/d-vecDB/security)
-[![Performance](https://img.shields.io/badge/performance-35M+%20ops%2Fs-orange.svg)](#-performance-benchmarks)
+
+
 
 **A high-performance, production-ready vector database written in Rust**
 
