@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Basic usage examples for VectorDB-RS Python client.
+Basic usage examples for d-vecDB Python client.
 
 This example demonstrates:
 - Creating collections
@@ -21,12 +21,12 @@ def main():
     """Run basic usage examples."""
     
     # Initialize client
-    print("🚀 Connecting to VectorDB-RS...")
+    print("🚀 Connecting to d-vecDB...")
     client = VectorDBClient(host="localhost", port=8080)
     
     # Test connection
     if not client.ping():
-        print("❌ Could not connect to VectorDB-RS server")
+        print("❌ Could not connect to d-vecDB server")
         print("   Make sure the server is running on localhost:8080")
         return
     

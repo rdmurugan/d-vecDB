@@ -160,4 +160,4 @@
 - **Comprehensive benchmarking infrastructure** ready for validation
 - **Realistic timeline and expectations** for continued development
 
-This update transforms VectorDB-RS from an overclaimed "production-ready" system into an **honest, promising development project** with clear value proposition and realistic development path.
+This update transforms d-vecDB from an overclaimed "production-ready" system into an **honest, promising development project** with clear value proposition and realistic development path.

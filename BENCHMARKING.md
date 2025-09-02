@@ -1,6 +1,6 @@
-# VectorDB-RS Benchmarking Guide
+# d-vecDB Benchmarking Guide
 
-This document provides comprehensive benchmarking information for VectorDB-RS, including actual performance results, methodology, and hardware optimization guidelines.
+This document provides comprehensive benchmarking information for d-vecDB, including actual performance results, methodology, and hardware optimization guidelines.
 
 ## ⚡ **Current Performance Results**
 
@@ -218,7 +218,7 @@ storage_type = "detect"
 
 | System | Language | Distance Calc | Insert Rate | Search Rate |
 |--------|----------|---------------|-------------|-------------|
-| **VectorDB-RS** | Rust | **35M ops/sec** | **7K/sec** | **13K/sec** |
+| **d-vecDB** | Rust | **35M ops/sec** | **7K/sec** | **13K/sec** |
 | Weaviate | Go | ~5M ops/sec | ~2K/sec | ~8K/sec |
 | Milvus | C++/Python | ~20M ops/sec | ~15K/sec | ~10K/sec |
 | Pinecone | Managed | N/A | ~5K/sec | ~15K/sec |

@@ -1,5 +1,5 @@
 """
-Integration tests for VectorDB-RS Python client.
+Integration tests for d-vecDB Python client.
 Tests real-world usage scenarios and workflows.
 """
 

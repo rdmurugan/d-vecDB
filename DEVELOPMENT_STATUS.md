@@ -1,4 +1,4 @@
-# VectorDB-RS Development Status
+# d-vecDB Development Status
 
 ## ✅ **COMPLETED COMPONENTS**
 

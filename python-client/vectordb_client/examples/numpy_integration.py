@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-NumPy integration examples for VectorDB-RS Python client.
+NumPy integration examples for d-vecDB Python client.
 
 This example demonstrates:
 - Working with NumPy arrays directly

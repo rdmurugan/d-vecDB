@@ -1,4 +1,4 @@
-# 🚀 VectorDB-RS
+# 🚀 d-vecDB
 
 [![Rust Version](https://img.shields.io/badge/rust-1.70+-brightgreen.svg)](https://rustup.rs/)
 [![License: Enterprise](https://img.shields.io/badge/License-Enterprise-red.svg)](LICENSE)
@@ -6,7 +6,7 @@
 
 **A high-performance, production-ready vector database written in Rust**
 
-VectorDB-RS is a modern vector database designed for AI applications, semantic search, and similarity matching. Built from the ground up in Rust, it delivers exceptional performance, memory safety, and concurrent processing capabilities.
+d-vecDB is a modern vector database designed for AI applications, semantic search, and similarity matching. Built from the ground up in Rust, it delivers exceptional performance, memory safety, and concurrent processing capabilities.
 
 ---
 
@@ -84,7 +84,7 @@ Based on our benchmark results, here are conservative performance extrapolations
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                  🎯 VectorDB-RS Stack                       │
+│                  🎯 d-vecDB Stack                           │
 ├─────────────────────────────────────────────────────────────┤
 │  CLI Tool      │  Client SDKs   │  REST + gRPC APIs          │
 │  (Management)  │  (Rust/Python) │  (Universal Access)        │
@@ -246,7 +246,7 @@ d-vecDB/
 
 ## 📚 **Client Libraries**
 
-VectorDB-RS provides official client libraries for multiple programming languages:
+d-vecDB provides official client libraries for multiple programming languages:
 
 ### 🐍 **Python Client**
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
@@ -480,8 +480,8 @@ CMD ["vectordb-server", "--config", "/etc/vectordb/config.toml"]
 
 ```bash
 # Build and run
-docker build -t vectordb-rs .
-docker run -p 8080:8080 -p 9090:9090 -v ./data:/data vectordb-rs
+docker build -t d-vecdb .
+docker run -p 8080:8080 -p 9090:9090 -v ./data:/data d-vecdb
 ```
 
 ### **Kubernetes Deployment**
@@ -490,20 +490,20 @@ docker run -p 8080:8080 -p 9090:9090 -v ./data:/data vectordb-rs
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vectordb-rs
+  name: d-vecdb
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: vectordb-rs
+      app: d-vecdb
   template:
     metadata:
       labels:
-        app: vectordb-rs
+        app: d-vecdb
     spec:
       containers:
-      - name: vectordb-rs
-        image: vectordb-rs:latest
+      - name: d-vecdb
+        image: d-vecdb:latest
         ports:
         - containerPort: 8080
         - containerPort: 9090
@@ -520,9 +520,9 @@ spec:
 
 ```yaml
 # Prometheus configuration
-- job_name: 'vectordb-rs'
+- job_name: 'd-vecdb'
   static_configs:
-  - targets: ['vectordb-rs:9091']
+  - targets: ['d-vecdb:9091']
   scrape_interval: 15s
   metrics_path: /metrics
 ```
@@ -533,7 +533,7 @@ spec:
 
 ### **vs. Traditional Vector Databases**
 
-| Feature | VectorDB-RS | Pinecone | Weaviate | Qdrant |
+| Feature | d-vecDB | Pinecone | Weaviate | Qdrant |
 |---------|-------------|----------|----------|--------|
 | **Language** | Rust | Python/C++ | Go | Rust |
 | **Memory Safety** | ✅ Zero-cost | ❌ Manual | ❌ GC Overhead | ✅ Zero-cost |
@@ -595,9 +595,9 @@ This project is licensed under the d-vecDB Enterprise License - see the [LICENSE
 ## 🆘 **Support**
 
 - **📧 Email**: durai@infinidatum.com
-- **💬 Discord**: [VectorDB-RS Community](https://discord.gg/vectordb-rs)
-- **🐛 Issues**: [GitHub Issues](https://github.com/your-org/d-vecDB/issues)
-- **📚 Documentation**: [docs.vectordb-rs.com](https://docs.vectordb-rs.com)
+- **💬 Discord**: [d-vecDB Community](https://discord.gg/d-vecdb)
+- **🐛 Issues**: [GitHub Issues](https://github.com/rdmurugan/d-vecDB/issues)
+- **📚 Documentation**: [docs.d-vecdb.com](https://docs.d-vecdb.com)
 
 ---
 
@@ -610,4 +610,4 @@ This project is licensed under the d-vecDB Enterprise License - see the [LICENSE
 
 ---
 
-**⚡ Ready to build the future of AI-powered applications? Get started with VectorDB-RS today!**
+**⚡ Ready to build the future of AI-powered applications? Get started with d-vecDB today!**

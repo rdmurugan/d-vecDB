@@ -1,10 +1,10 @@
-# VectorDB-RS Python Client
+# d-vecDB Python Client
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: Enterprise](https://img.shields.io/badge/License-Enterprise-red.svg)](../LICENSE)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-A comprehensive Python client library for [VectorDB-RS](https://github.com/your-org/d-vecDB), providing both synchronous and asynchronous interfaces for vector database operations.
+A comprehensive Python client library for [d-vecDB](https://github.com/rdmurugan/d-vecDB), providing both synchronous and asynchronous interfaces for vector database operations.
 
 ## 🚀 **Features**
 
@@ -44,7 +44,7 @@ pip install vectordb-client[examples]
 ### **From Source**
 
 ```bash
-git clone https://github.com/your-org/d-vecDB.git
+git clone https://github.com/rdmurugan/d-vecDB.git
 cd d-vecDB/python-client
 pip install -e .
 ```
@@ -57,7 +57,7 @@ pip install -e .
 import numpy as np
 from vectordb_client import VectorDBClient
 
-# Connect to VectorDB-RS server
+# Connect to d-vecDB server
 client = VectorDBClient(host="localhost", port=8080)
 
 # Create a collection
@@ -96,7 +96,7 @@ import numpy as np
 from vectordb_client import AsyncVectorDBClient
 
 async def main():
-    # Connect to VectorDB-RS server
+    # Connect to d-vecDB server
     async with AsyncVectorDBClient(host="localhost", port=8080) as client:
         
         # Create collection
@@ -492,7 +492,7 @@ python -m pytest tests/
 # Run with coverage
 python -m pytest tests/ --cov=vectordb_client --cov-report=html
 
-# Run integration tests (requires running VectorDB-RS server)
+# Run integration tests (requires running d-vecDB server)
 python -m pytest tests/integration/ -v
 
 # Run performance benchmarks
@@ -503,7 +503,7 @@ python -m pytest tests/benchmarks/ -v
 
 ```bash
 # Setup development environment
-git clone https://github.com/your-org/d-vecDB.git
+git clone https://github.com/rdmurugan/d-vecDB.git
 cd d-vecDB/python-client
 
 # Install in development mode
@@ -562,11 +562,11 @@ This project is licensed under the d-vecDB Enterprise License - see the [LICENSE
 
 ## 🆘 **Support**
 
-- **Documentation**: [docs.vectordb-rs.com](https://docs.vectordb-rs.com)
-- **Issues**: [GitHub Issues](https://github.com/your-org/d-vecDB/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-org/d-vecDB/discussions)
-- **Discord**: [VectorDB-RS Community](https://discord.gg/vectordb-rs)
+- **Documentation**: [docs.d-vecdb.com](https://docs.d-vecdb.com)
+- **Issues**: [GitHub Issues](https://github.com/rdmurugan/d-vecDB/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/rdmurugan/d-vecDB/discussions)
+- **Discord**: [d-vecDB Community](https://discord.gg/d-vecdb)
 
 ---
 
-**Built with ❤️ by the VectorDB-RS team**
+**Built with ❤️ by the d-vecDB team**

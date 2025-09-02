@@ -1,4 +1,4 @@
-# VectorDB-RS Performance Analysis
+# d-vecDB Performance Analysis
 
 ⚠️ **Important**: This document contains both **validated test results** and **theoretical projections**. All performance claims marked as theoretical require empirical validation.
 
@@ -51,7 +51,7 @@ test hnsw::tests::test_layer_selection ... ok
 
 ### **Theoretical Analysis vs Traditional Vector Databases**
 
-| **Operation** | **Traditional Approach** | **VectorDB-RS (Theory)** | **Expected Improvement** |
+| **Operation** | **Traditional Approach** | **d-vecDB (Theory)** | **Expected Improvement** |
 |---------------|----------------------|---------------------------|--------------------------|
 | **Vector Search** | O(N) linear scan | O(log N) HNSW | **10-1000x (unverified)** |
 | **Memory Usage** | Load all in RAM | Memory-mapped | **Potentially more efficient** |
@@ -130,7 +130,7 @@ test hnsw::tests::test_layer_selection ... ok
 
 ### **Query Latency Comparison**
 
-| **Scenario** | **Pinecone** | **VectorDB-RS** | **Advantage** |
+| **Scenario** | **Pinecone** | **d-vecDB** | **Advantage** |
 |--------------|--------------|-----------------|---------------|
 | **Local Network** | 10-20ms | <1ms | **20x faster** |
 | **Internet** | 50-100ms | <1ms (local) | **100x faster** |
@@ -138,7 +138,7 @@ test hnsw::tests::test_layer_selection ... ok
 
 ### **Cost Performance**
 
-| **Scale** | **Pinecone/month** | **VectorDB-RS/month** | **Savings** |
+| **Scale** | **Pinecone/month** | **d-vecDB/month** | **Savings** |
 |-----------|-------------------|----------------------|-------------|
 | **1M vectors** | $70 | $50 (infrastructure) | **30% savings** |
 | **10M vectors** | $700 | $100 (infrastructure) | **85% savings** |
@@ -240,4 +240,4 @@ cargo bench --package vectordb-common
 4. **Data Distribution Sensitivity**: Performance heavily depends on vector characteristics
 5. **Parameter Tuning**: HNSW requires dataset-specific optimization
 
-The VectorDB-RS system shows **promising theoretical foundations** but requires **comprehensive empirical validation** before performance claims can be considered reliable.
+The d-vecDB system shows **promising theoretical foundations** but requires **comprehensive empirical validation** before performance claims can be considered reliable.

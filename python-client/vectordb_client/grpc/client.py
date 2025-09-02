@@ -1,5 +1,5 @@
 """
-Synchronous gRPC client for VectorDB-RS.
+Synchronous gRPC client for d-vecDB.
 """
 
 from typing import List, Optional, Dict, Any

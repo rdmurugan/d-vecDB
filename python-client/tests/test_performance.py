@@ -1,5 +1,5 @@
 """
-Performance tests for VectorDB-RS Python client.
+Performance tests for d-vecDB Python client.
 """
 
 import pytest

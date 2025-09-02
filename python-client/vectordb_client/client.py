@@ -1,5 +1,5 @@
 """
-Main synchronous client interface for VectorDB-RS.
+Main synchronous client interface for d-vecDB.
 """
 
 from typing import List, Optional, Dict, Any, Union
@@ -15,7 +15,7 @@ from .exceptions import VectorDBError, ClientConfigurationError
 
 class VectorDBClient:
     """
-    Main synchronous client for VectorDB-RS.
+    Main synchronous client for d-vecDB.
     
     Supports both REST and gRPC protocols with automatic fallback.
     """

@@ -1,5 +1,5 @@
 """
-Unit tests for VectorDB-RS type definitions and validation.
+Unit tests for d-vecDB type definitions and validation.
 """
 
 import pytest

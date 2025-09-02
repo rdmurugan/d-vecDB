@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-VectorDB-RS Python Client
-A comprehensive Python API interface for VectorDB-RS vector database.
+d-vecDB Python Client
+A comprehensive Python API interface for d-vecDB vector database.
 """
 
 from setuptools import setup, find_packages
@@ -26,9 +26,9 @@ def read_requirements():
 setup(
     name="vectordb-client",
     version="0.1.0",
-    author="VectorDB-RS Team",
-    author_email="team@vectordb-rs.com",
-    description="Python client library for VectorDB-RS vector database",
+    author="d-vecDB Team",
+    author_email="durai@infinidatum.com",
+    description="Python client library for d-vecDB vector database",
     long_description=read_readme(),
     long_description_content_type="text/markdown",
     url="https://github.com/your-org/d-vecDB",
@@ -90,7 +90,7 @@ setup(
     project_urls={
         "Bug Reports": "https://github.com/your-org/d-vecDB/issues",
         "Source": "https://github.com/your-org/d-vecDB",
-        "Documentation": "https://docs.vectordb-rs.com",
+        "Documentation": "https://docs.d-vecdb.com",
     },
     keywords="vector database, similarity search, machine learning, embeddings, HNSW",
     include_package_data=True,

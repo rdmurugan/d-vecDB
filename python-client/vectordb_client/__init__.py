@@ -1,7 +1,7 @@
 """
-VectorDB-RS Python Client
+d-vecDB Python Client
 
-A comprehensive Python API interface for VectorDB-RS vector database.
+A comprehensive Python API interface for d-vecDB vector database.
 Supports both REST and gRPC protocols with synchronous and asynchronous operations.
 """
 
@@ -30,8 +30,8 @@ from .exceptions import (
 )
 
 __version__ = "0.1.0"
-__author__ = "VectorDB-RS Team"
-__email__ = "team@vectordb-rs.com"
+__author__ = "d-vecDB Team"
+__email__ = "durai@infinidatum.com"
 
 # Main client classes
 __all__ = [

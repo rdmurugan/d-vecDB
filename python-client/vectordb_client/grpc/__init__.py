@@ -1,4 +1,4 @@
-"""gRPC client implementation for VectorDB-RS."""
+"""gRPC client implementation for d-vecDB."""
 
 from .client import GrpcClient
 

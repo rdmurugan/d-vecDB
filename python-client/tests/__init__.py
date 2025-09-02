@@ -1,1 +1,1 @@
-# Test package for VectorDB-RS Python client
+# Test package for d-vecDB Python client

@@ -1,6 +1,6 @@
-# VectorDB-RS Python Client Tests
+# d-vecDB Python Client Tests
 
-This directory contains comprehensive tests for the VectorDB-RS Python client library.
+This directory contains comprehensive tests for the d-vecDB Python client library.
 
 ## Test Structure
 
@@ -56,7 +56,7 @@ tests/
 ## Running Tests
 
 ### Prerequisites
-1. **VectorDB-RS Server**: Tests require a running VectorDB-RS server
+1. **d-vecDB Server**: Tests require a running d-vecDB server
    ```bash
    # Start the server (from project root)
    cargo run --bin vectordb-server
@@ -259,7 +259,7 @@ Tests are designed to run in CI environments:
 
 ### GitHub Actions Example
 ```yaml
-name: Test VectorDB-RS Python Client
+name: Test d-vecDB Python Client
 
 on: [push, pull_request]
 
@@ -269,7 +269,7 @@ jobs:
     
     services:
       vectordb:
-        image: vectordb-rs:latest
+        image: d-vecdb:latest
         ports:
           - 8080:8080
           - 9090:9090
@@ -300,7 +300,7 @@ jobs:
 ### Common Issues
 
 1. **Server not available**: 
-   - Ensure VectorDB-RS server is running on expected port
+   - Ensure d-vecDB server is running on expected port
    - Check firewall settings
    - Verify server health: `curl http://localhost:8080/health`
 

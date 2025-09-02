@@ -1,5 +1,5 @@
 """
-Pytest configuration and fixtures for VectorDB-RS client tests.
+Pytest configuration and fixtures for d-vecDB client tests.
 """
 
 import pytest

@@ -1,7 +1,7 @@
-# 🎉 VectorDB-RS: Production-Ready Vector Database!
+# 🎉 d-vecDB: Production-Ready Vector Database!
 
 
-### **VectorDB-RS Production System**
+### **d-vecDB Production System**
 - ✅ **O(log N) HNSW search** - 1000x performance improvement
 - ✅ **Stable Rust ecosystem** - production-ready dependencies
 - ✅ **True multi-threading** - full concurrent operation support
@@ -13,7 +13,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                  🎯 VectorDB-RS Stack                       │
+│                  🎯 d-vecDB Stack                       │
 ├─────────────────────────────────────────────────────────────┤
 │  CLI Tool      │  Client SDKs   │  REST + gRPC APIs          │
 │  (Full-featured) (Rust ready)   (Production protocols)      │
@@ -84,7 +84,7 @@
 
 ### **vs Pinecone Pricing (Annual Savings)**
 
-| **Scale** | **Pinecone** | **VectorDB-RS** | **Savings** |
+| **Scale** | **Pinecone** | **d-vecDB** | **Savings** |
 |-----------|--------------|-----------------|-------------|
 | **1M vectors** | $840/year | $600/year | **$240 (30%)** |
 | **10M vectors** | $8,400/year | $1,200/year | **$7,200 (85%)** |
@@ -152,7 +152,7 @@ Cost: $200-500/month
 
 ## 🎊 **Achievement Unlocked: Production Vector Database**
 
-**VectorDB-RS represents a complete implementation** of a **world-class standalone vector database** built from the ground up in Rust, ready for enterprise production deployments.
+**d-vecDB represents a complete implementation** of a **world-class standalone vector database** built from the ground up in Rust, ready for enterprise production deployments.
 
 **The system is ready for:**
 - ⚡ High-performance production workloads

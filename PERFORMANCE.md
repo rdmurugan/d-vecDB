@@ -1,10 +1,10 @@
-# VectorDB-RS Performance Guide
+# d-vecDB Performance Guide
 
-This guide provides comprehensive information about VectorDB-RS performance characteristics, optimization techniques, and scaling strategies for production deployments.
+This guide provides comprehensive information about d-vecDB performance characteristics, optimization techniques, and scaling strategies for production deployments.
 
 ## 🚀 **Performance Overview**
 
-VectorDB-RS delivers exceptional performance through:
+d-vecDB delivers exceptional performance through:
 - **Native Rust implementation** with zero-cost abstractions
 - **HNSW indexing** for O(log N) search complexity  
 - **Memory-mapped storage** for efficient data access
@@ -269,7 +269,7 @@ struct PerformanceMetrics {
 
 ```yaml
 # Prometheus configuration
-- job_name: 'vectordb-rs'
+- job_name: 'd-vecdb'
   static_configs:
   - targets: ['vectordb:9091']
   scrape_interval: 10s
@@ -449,4 +449,4 @@ jit_optimization = false          # Just-in-time code generation
 
 ---
 
-**For specific performance issues or optimization questions, please consult our [Troubleshooting Guide](TROUBLESHOOTING.md) or reach out to the community via [GitHub Discussions](https://github.com/your-org/d-vecDB/discussions).**
+**For specific performance issues or optimization questions, please consult our [Troubleshooting Guide](TROUBLESHOOTING.md) or reach out to the community via [GitHub Discussions](https://github.com/rdmurugan/d-vecDB/discussions).**

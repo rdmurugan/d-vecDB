@@ -1,5 +1,5 @@
 """
-Type definitions for VectorDB-RS Python client.
+Type definitions for d-vecDB Python client.
 """
 
 from enum import Enum

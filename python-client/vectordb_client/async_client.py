@@ -1,5 +1,5 @@
 """
-Main asynchronous client interface for VectorDB-RS.
+Main asynchronous client interface for d-vecDB.
 """
 
 from typing import List, Optional, Dict, Any
@@ -14,7 +14,7 @@ from .exceptions import VectorDBError, ClientConfigurationError
 
 class AsyncVectorDBClient:
     """
-    Main asynchronous client for VectorDB-RS.
+    Main asynchronous client for d-vecDB.
     
     Supports both REST and gRPC protocols with automatic fallback.
     """

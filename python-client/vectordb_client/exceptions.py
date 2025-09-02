@@ -1,12 +1,12 @@
 """
-Exception classes for VectorDB-RS Python client.
+Exception classes for d-vecDB Python client.
 """
 
 from typing import Optional, Dict, Any
 
 
 class VectorDBError(Exception):
-    """Base exception for all VectorDB-RS client errors."""
+    """Base exception for all d-vecDB client errors."""
     
     def __init__(
         self, 

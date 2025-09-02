@@ -1,5 +1,5 @@
 """
-Synchronous REST API client for VectorDB-RS.
+Synchronous REST API client for d-vecDB.
 """
 
 import json
@@ -19,7 +19,7 @@ from ..exceptions import (
 
 
 class RestClient:
-    """Synchronous REST API client for VectorDB-RS."""
+    """Synchronous REST API client for d-vecDB."""
     
     def __init__(
         self,

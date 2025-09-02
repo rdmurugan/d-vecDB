@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Async usage examples for VectorDB-RS Python client.
+Async usage examples for d-vecDB Python client.
 
 This example demonstrates:
 - Async context managers
