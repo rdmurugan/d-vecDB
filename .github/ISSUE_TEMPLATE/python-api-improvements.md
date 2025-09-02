@@ -6,7 +6,7 @@ labels: ["enhancement", "python", "DX"]
 ---
 
 Goal
-- Make the Python experience smoother for loading the SQLite vector database extension, preparing local embeddings, and running lightweight ANN queries.
+- Make the Python experience smoother for connecting to the d-vecDB vector database, preparing local embeddings, and running lightweight ANN queries.
 
 Scope
 - Convenience helpers (e.g., `f32_blob`, normalization, dim checks).
@@ -17,7 +17,7 @@ Milestones
 - [ ] Thin utility module under `python/`
 - [ ] Type hints and docstrings
 - [ ] Examples for batch insert + querying
-- [ ] CI smoke test invoking `sqlite3.load_extension`
+- [ ] CI smoke test for Python client connectivity
 
 Notes
 - Keep API surface small and explicit; avoid heavy frameworks.

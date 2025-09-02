@@ -152,7 +152,7 @@ Cost: $200-500/month
 
 ## 🎊 **Achievement Unlocked: Production Vector Database**
 
-**VectorDB-RS represents a complete transformation** from a proof-of-concept SQLite extension into a **world-class standalone vector database** ready for enterprise production deployments.
+**VectorDB-RS represents a complete implementation** of a **world-class standalone vector database** built from the ground up in Rust, ready for enterprise production deployments.
 
 **The system is ready for:**
 - ⚡ High-performance production workloads

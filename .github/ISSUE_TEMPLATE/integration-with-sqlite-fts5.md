@@ -1,29 +1,30 @@
 ---
-name: Integration with SQLite FTS5
-about: Tracking issue to combine vector search with full-text search
-title: "Integration with SQLite FTS5"
-labels: ["enhancement", "integration", "FTS5"]
+name: Hybrid Search Integration
+about: Tracking issue to combine vector search with full-text search capabilities
+title: "Hybrid Search Integration"
+labels: ["enhancement", "integration", "search"]
 ---
 
 Goal
-- Enable hybrid retrieval: FTS5 text search + ANN rerank inside SQLite for local embeddings workflows.
+- Enable hybrid retrieval: Full-text search + vector similarity reranking for comprehensive search workflows.
 
 Scope
-- Query plan examples combining `MATCH` with `pocketvec` vtab.
-- Helper functions or views to streamline hybrid queries.
-- Benchmarks: precision@k vs. FTS-only and vector-only baselines.
+- API endpoints for combining text-based and vector-based search
+- Query planning for multi-stage retrieval strategies
+- Benchmarks: precision@k vs. text-only and vector-only baselines
 
 Milestones
-- [ ] Example schema and demo dataset
-- [ ] SQL patterns for two-stage retrieval (FTS → vector)
-- [ ] Optional Python helper for hybrid queries
-- [ ] Metrics + docs in USER_GUIDE.md
+- [ ] Hybrid search API design and implementation
+- [ ] Query patterns for two-stage retrieval (text → vector)
+- [ ] Client SDK helpers for hybrid queries
+- [ ] Performance metrics and documentation
 
 Notes
-- Keep everything in-process (no external services).
-- Ensure predictable performance on modest hardware.
+- Focus on efficient in-memory processing
+- Ensure predictable performance across different hardware configurations
+- Maintain API simplicity for common use cases
 
 How to Contribute
-- Share query patterns, indexes, and measurements.
-- PRs welcome for docs, examples, and helper utilities.
+- Share search patterns, use cases, and performance measurements
+- PRs welcome for docs, examples, and client utilities
 

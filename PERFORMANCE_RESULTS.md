@@ -49,15 +49,15 @@ test hnsw::tests::test_layer_selection ... ok
 - Index parameter tuning
 - Implementation optimizations
 
-### **Theoretical Analysis vs Original SQLite Extension**
+### **Theoretical Analysis vs Traditional Vector Databases**
 
-| **Operation** | **Original (SQLite)** | **VectorDB-RS (Theory)** | **Expected Improvement** |
+| **Operation** | **Traditional Approach** | **VectorDB-RS (Theory)** | **Expected Improvement** |
 |---------------|----------------------|---------------------------|--------------------------|
 | **Vector Search** | O(N) linear scan | O(log N) HNSW | **10-1000x (unverified)** |
 | **Memory Usage** | Load all in RAM | Memory-mapped | **Potentially more efficient** |
-| **Concurrency** | Thread-local storage | True multi-threaded | **Better parallelism** |
-| **Persistence** | Ephemeral | WAL + ACID | **Enhanced durability** |
-| **Scalability** | ~1K-10K vectors | Unknown capacity | **Needs testing** |
+| **Concurrency** | Limited threading | True multi-threaded | **Better parallelism** |
+| **Persistence** | Various approaches | WAL + ACID | **Enhanced durability** |
+| **Scalability** | Variable capacity | Unknown capacity | **Needs testing** |
 
 ### **Theoretical Performance Targets (Require Validation)**
 

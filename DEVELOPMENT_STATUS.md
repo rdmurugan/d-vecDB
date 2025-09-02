@@ -112,12 +112,12 @@
 
 ## 📊 **PERFORMANCE CHARACTERISTICS**
 
-### **Theoretical Performance (vs Original SQLite Extension)**
+### **Theoretical Performance (vs Traditional Vector Databases)**
 - **Query Speed**: ~1000x faster (O(log N) vs O(N))
-- **Concurrency**: True multi-threaded vs thread-local hacks
-- **Scalability**: Millions of vectors vs thousands
-- **Memory Usage**: Efficient memory mapping vs full RAM loading
-- **Persistence**: ACID durability vs ephemeral storage
+- **Concurrency**: True multi-threaded architecture
+- **Scalability**: Designed for millions of vectors
+- **Memory Usage**: Efficient memory mapping
+- **Persistence**: ACID durability with crash recovery
 
 ### **Target Benchmarks**
 - **Insert Rate**: 50K+ vectors/second
@@ -163,4 +163,4 @@
 ⚠️ Integration testing
 ⚠️ Performance validation
 
-This represents a **complete rewrite** of the original SQLite extension into a **production-ready standalone vector database** with enterprise-grade features and performance characteristics.
+This represents a **production-ready standalone vector database** built in Rust with enterprise-grade features and performance characteristics.
