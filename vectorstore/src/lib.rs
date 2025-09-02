@@ -5,7 +5,7 @@ use vectordb_index::{VectorIndex, HnswIndex};
 use std::collections::HashMap;
 use parking_lot::RwLock;
 use uuid::Uuid;
-use tracing::{info, warn, error};
+use tracing::info;
 use metrics::{counter, histogram, gauge};
 
 /// Main vector store engine that coordinates storage and indexing
@@ -255,7 +255,7 @@ impl VectorStore {
             if let Some(config) = self.storage.get_collection_config(&collection_name)? {
                 info!("Rebuilding index for collection: {}", collection_name);
                 
-                let mut index = Box::new(HnswIndex::new(
+                let index = Box::new(HnswIndex::new(
                     config.index_config.clone(),
                     config.distance_metric,
                     config.dimension,

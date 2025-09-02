@@ -1,6 +1,17 @@
-use vectordb_proto::*;
+use vectordb_proto::{
+    vector_db_server::{VectorDb, VectorDbServer}, CreateCollectionRequest, CreateCollectionResponse,
+    DeleteCollectionRequest, DeleteCollectionResponse, ListCollectionsRequest,
+    ListCollectionsResponse, GetCollectionInfoRequest, GetCollectionInfoResponse,
+    InsertRequest, InsertResponse, BatchInsertRequest, BatchInsertResponse,
+    DeleteRequest, DeleteResponse, QueryRequest, QueryResponse, QueryResult,
+    UpdateRequest, UpdateResponse, GetStatsRequest, GetStatsResponse,
+    HealthRequest, HealthResponse, CollectionStats, ServerStats, Vector
+};
 use vectordb_vectorstore::VectorStore;
-use vectordb_common::types::*;
+use vectordb_common::types::{
+    CollectionConfig, IndexConfig, VectorId, CollectionId, 
+    DistanceMetric as CommonDistanceMetric, VectorType as CommonVectorType
+};
 use std::sync::Arc;
 use std::collections::HashMap;
 use tonic::{Request, Response, Status, Code};
@@ -20,7 +31,7 @@ impl VectorDbService {
 }
 
 #[tonic::async_trait]
-impl vector_db_server::VectorDb for VectorDbService {
+impl VectorDb for VectorDbService {
     #[instrument(skip(self))]
     async fn create_collection(
         &self,
@@ -301,7 +312,7 @@ impl vector_db_server::VectorDb for VectorDbService {
             )
         };
         
-        let query_request = QueryRequest {
+        let query_request = vectordb_common::types::QueryRequest {
             collection: req.collection_name,
             vector: req.query_vector,
             limit: req.limit as usize,
@@ -428,7 +439,6 @@ impl vector_db_server::VectorDb for VectorDbService {
 /// Start the gRPC server
 pub async fn start_grpc_server(addr: SocketAddr, store: Arc<VectorStore>) -> anyhow::Result<()> {
     use tonic::transport::Server;
-    use vector_db_server::VectorDbServer;
     
     let service = VectorDbService::new(store);
     

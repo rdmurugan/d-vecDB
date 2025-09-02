@@ -54,6 +54,7 @@ async-trait = "0.1"
 
 # Development
 criterion = { version = "0.5", features = ["html_reports"] }
+tempfile = "3.0"
 
 
 [profile.release]

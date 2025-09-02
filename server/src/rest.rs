@@ -42,7 +42,7 @@ impl<T> ApiResponse<T> {
 }
 
 /// Collection creation request
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 struct CreateCollectionRequest {
     name: String,
     dimension: usize,
@@ -52,7 +52,7 @@ struct CreateCollectionRequest {
 }
 
 /// Vector insertion request
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 struct InsertVectorRequest {
     id: Option<String>,
     data: Vec<f32>,
@@ -60,13 +60,13 @@ struct InsertVectorRequest {
 }
 
 /// Batch vector insertion request
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 struct BatchInsertRequest {
     vectors: Vec<InsertVectorRequest>,
 }
 
 /// Query request
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 struct QueryVectorsRequest {
     vector: Vec<f32>,
     limit: Option<usize>,
@@ -75,7 +75,7 @@ struct QueryVectorsRequest {
 }
 
 /// Query parameters for search
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 struct QueryParams {
     limit: Option<usize>,
     ef_search: Option<usize>,

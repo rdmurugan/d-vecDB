@@ -1,21 +1,20 @@
 use crate::{VectorDbClient, ClientConfig, ServerStats};
 use vectordb_common::{Result, VectorDbError};
-use vectordb_common::types::{Vector, VectorId, CollectionId, DistanceMetric, VectorType, IndexConfig};
+use vectordb_common::types::{Vector, VectorId, CollectionId, IndexConfig};
 use vectordb_common::types::{CollectionConfig as CommonCollectionConfig, CollectionStats as CommonCollectionStats};
 use vectordb_common::types::{QueryRequest, QueryResult};
 use vectordb_proto::{vector_db_client::VectorDbClient as ProtoClient};
 use vectordb_proto::{
     CreateCollectionRequest, DeleteCollectionRequest, GetCollectionInfoRequest,
-    ListCollectionsRequest, QueryRequest as ProtoQueryRequest, InsertRequest, DeleteRequest, BatchInsertRequest,
+    ListCollectionsRequest, InsertRequest, DeleteRequest, BatchInsertRequest,
     UpdateRequest, GetStatsRequest, HealthRequest,
-    CollectionConfig as ProtoCollectionConfig, CollectionStats as ProtoCollectionStats,
-    Vector as ProtoVector, DistanceMetric as ProtoDistanceMetric, VectorType as ProtoVectorType
+    Vector as ProtoVector
 };
 use tonic::transport::{Channel, Endpoint};
 use tonic::{Request, Status};
 use std::collections::HashMap;
 use std::time::Duration;
-use tracing::{info, warn, error, instrument};
+use tracing::{info, warn, instrument};
 use uuid::Uuid;
 
 /// gRPC client implementation

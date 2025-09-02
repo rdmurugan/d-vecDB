@@ -5,8 +5,7 @@ use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::time::Duration;
-use tracing::{info, warn, error, instrument};
-use uuid::Uuid;
+use tracing::{info, warn, instrument};
 
 /// REST API response wrapper
 #[derive(Deserialize)]

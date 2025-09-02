@@ -2,9 +2,8 @@ pub mod grpc_client;
 pub mod rest_client;
 pub mod config;
 
-use vectordb_common::{Result, VectorDbError};
+use vectordb_common::Result;
 use vectordb_common::types::*;
-use std::sync::Arc;
 
 pub use config::*;
 pub use grpc_client::*;

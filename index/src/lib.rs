@@ -1,9 +1,8 @@
 pub mod hnsw;
 pub mod node;
 
-use vectordb_common::{Result, VectorDbError};
+use vectordb_common::Result;
 use vectordb_common::types::*;
-use std::collections::BinaryHeap;
 
 pub use hnsw::*;
 pub use node::*;

@@ -3,7 +3,7 @@ use vectordb_common::types::*;
 use serde::{Deserialize, Serialize};
 use std::path::{Path, PathBuf};
 use tokio::fs::{File, OpenOptions};
-use tokio::io::{AsyncReadExt, AsyncWriteExt, BufReader, BufWriter};
+use tokio::io::{AsyncReadExt, AsyncWriteExt, BufReader};
 use uuid::Uuid;
 
 /// Write-Ahead Log operations
