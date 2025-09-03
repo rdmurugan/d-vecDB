@@ -69,6 +69,9 @@ class RestClient:
             auth=auth,
             follow_redirects=True
         )
+        
+        # Client-side ID mapping: user_id -> (server_id, vector_data, metadata)
+        self._id_mapping: Dict[str, tuple] = {}
     
     def __enter__(self):
         """Context manager entry."""
@@ -157,29 +160,78 @@ class RestClient:
     # Vector Operations
     def insert_vector(self, collection_name: str, vector: Vector) -> InsertResponse:
         """Insert a single vector."""
+        # Server expects {"data": [...]} and generates its own ID
+        request_data = {"data": vector.data}
+        if vector.metadata:
+            request_data["metadata"] = vector.metadata
+            
         response_data = self._make_request(
             "POST",
             f"/collections/{collection_name}/vectors",
-            json_data=vector.model_dump()
+            json_data=request_data
         )
-        return InsertResponse(**response_data)
+        
+        # Create response with the server-generated ID
+        result = InsertResponse(**response_data)
+        if response_data.get("success") and response_data.get("data"):
+            # The server returns the generated ID in the data field
+            server_id = response_data["data"]
+            result.generated_id = server_id
+            
+            # Store mapping: user_id -> (server_id, vector_data, metadata)
+            self._id_mapping[vector.id] = (server_id, vector.data, vector.metadata)
+        
+        return result
     
     def insert_vectors(self, collection_name: str, vectors: List[Vector]) -> InsertResponse:
         """Insert multiple vectors."""
+        # Server expects {"vectors": [{"data": [...]}, ...]} format
+        vector_data = []
+        for v in vectors:
+            vec_data = {"data": v.data}
+            if v.metadata:
+                vec_data["metadata"] = v.metadata
+            vector_data.append(vec_data)
+            
         response_data = self._make_request(
             "POST",
             f"/collections/{collection_name}/vectors/batch",
-            json_data={"vectors": [v.model_dump() for v in vectors]}
+            json_data={"vectors": vector_data}
         )
-        return InsertResponse(**response_data)
+        
+        # Server returns array of generated IDs in data field
+        result = InsertResponse(**response_data)
+        if response_data.get("success") and isinstance(response_data.get("data"), list):
+            server_ids = response_data["data"]
+            result.generated_id = server_ids  # Array of IDs
+            
+            # Store mappings for each vector: user_id -> (server_id, vector_data, metadata)
+            for i, vector in enumerate(vectors):
+                if i < len(server_ids):
+                    server_id = server_ids[i]
+                    self._id_mapping[vector.id] = (server_id, vector.data, vector.metadata)
+        
+        return result
     
     def get_vector(self, collection_name: str, vector_id: str) -> Vector:
         """Retrieve a vector by ID."""
+        # First check if this is a user-provided ID in our mapping
+        if vector_id in self._id_mapping:
+            server_id, vector_data, metadata = self._id_mapping[vector_id]
+            return Vector(id=vector_id, data=vector_data, metadata=metadata)
+        
+        # If not in mapping, try direct server retrieval (assuming it's a server ID)
         response_data = self._make_request(
             "GET", 
             f"/collections/{collection_name}/vectors/{vector_id}"
         )
-        return Vector(**response_data["vector"])
+        # Server returns data in "data" field, not "vector" field
+        if response_data.get("data"):
+            return Vector(**response_data["data"])
+        else:
+            # If server doesn't return vector data, we need to handle this case
+            from ..exceptions import VectorNotFoundError
+            raise VectorNotFoundError(f"Vector {vector_id} not found or server doesn't return vector data")
     
     def update_vector(self, collection_name: str, vector: Vector) -> InsertResponse:
         """Update an existing vector."""

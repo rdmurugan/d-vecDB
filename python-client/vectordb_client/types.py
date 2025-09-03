@@ -203,6 +203,28 @@ class InsertResponse(BaseModel):
     success: bool
     data: Optional[Any] = None
     error: Optional[str] = None
+    generated_id: Optional[Union[str, List[str]]] = None  # Server-generated ID(s) for inserted vector(s)
+    
+    @property 
+    def vector_id(self) -> Optional[Union[str, List[str]]]:
+        """Get the ID(s) of the inserted vector(s) (server-generated)."""
+        return self.generated_id or self.data
+    
+    @property 
+    def vector_ids(self) -> List[str]:
+        """Get list of vector IDs (for batch operations)."""
+        ids = self.vector_id
+        if isinstance(ids, list):
+            return ids
+        elif isinstance(ids, str):
+            return [ids]
+        else:
+            return []
+    
+    @property
+    def inserted_count(self) -> int:
+        """Get the number of vectors that were inserted."""
+        return len(self.vector_ids)
 
 
 class CollectionResponse(BaseModel):
