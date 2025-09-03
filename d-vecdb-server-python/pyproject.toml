@@ -4,19 +4,18 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "d-vecdb-server"
-version = "0.1.1"
+version = "0.1.3"
 authors = [
     {name = "Durai", email = "durai@infinidatum.com"},
 ]
-description = "High-performance vector database server with embedded binaries"
+description = "Complete d-vecDB server package with embedded binaries - zero configuration required"
 readme = "README.md"
-license = {text = "MIT"}
+license = "MIT"
 requires-python = ">=3.8"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers", 
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",

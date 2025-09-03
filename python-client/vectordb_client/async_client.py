@@ -53,8 +53,10 @@ class AsyncVectorDBClient:
         # Determine ports
         if self.protocol == "rest":
             self.port = port or 8080
+            self.rest_port = self.port  # Ensure rest_port is always available for compatibility
         elif self.protocol == "grpc":
             self.port = grpc_port or port or 9090
+            self.grpc_port = self.port
         elif self.protocol == "auto":
             self.rest_port = port or 8080
             self.grpc_port = grpc_port or 9090

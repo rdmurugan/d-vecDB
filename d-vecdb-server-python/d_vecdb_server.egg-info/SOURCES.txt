@@ -8,7 +8,6 @@ d_vecdb_server.egg-info/PKG-INFO
 d_vecdb_server.egg-info/SOURCES.txt
 d_vecdb_server.egg-info/dependency_links.txt
 d_vecdb_server.egg-info/entry_points.txt
-d_vecdb_server.egg-info/not-zip-safe
 d_vecdb_server.egg-info/requires.txt
 d_vecdb_server.egg-info/top_level.txt
 d_vecdb_server/binaries/vectordb-server

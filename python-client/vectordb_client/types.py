@@ -10,17 +10,17 @@ import numpy as np
 
 class DistanceMetric(str, Enum):
     """Supported distance metrics for vector similarity."""
-    COSINE = "cosine"
-    EUCLIDEAN = "euclidean"  
-    DOT_PRODUCT = "dot_product"
-    MANHATTAN = "manhattan"
+    COSINE = "Cosine"
+    EUCLIDEAN = "Euclidean"  
+    DOT_PRODUCT = "DotProduct"
+    MANHATTAN = "Manhattan"
 
 
 class VectorType(str, Enum):
     """Supported vector data types."""
-    FLOAT32 = "float32"
-    FLOAT16 = "float16"
-    INT8 = "int8"
+    FLOAT32 = "Float32"
+    FLOAT16 = "Float16"
+    INT8 = "Int8"
 
 
 class IndexConfig(BaseModel):
@@ -157,10 +157,19 @@ class HealthResponse(BaseModel):
     """Health check response."""
     model_config = ConfigDict(extra="forbid")
     
-    healthy: bool
-    status: str
-    uptime_seconds: Optional[int] = None
-    version: Optional[str] = None
+    success: bool
+    data: str
+    error: Optional[str] = None
+    
+    @property
+    def healthy(self) -> bool:
+        """Backward compatibility property."""
+        return self.success and self.data == "OK"
+    
+    @property
+    def status(self) -> str:
+        """Backward compatibility property."""
+        return self.data if self.data else "unknown"
 
 
 # Response wrapper types
@@ -169,30 +178,54 @@ class ApiResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
     
     success: bool
-    message: Optional[str] = None
     data: Optional[Any] = None
+    error: Optional[str] = None
 
 
-class SearchResponse(ApiResponse):
+class SearchResponse(BaseModel):
     """Response from vector search operation."""
-    results: List[QueryResult] = Field(default_factory=list)
-    query_time_ms: Optional[int] = None
+    model_config = ConfigDict(extra="forbid")
+    
+    success: bool
+    data: List[QueryResult] = Field(default_factory=list)
+    error: Optional[str] = None
+    
+    @property
+    def results(self) -> List[QueryResult]:
+        """Backward compatibility property."""
+        return self.data
 
 
-class InsertResponse(ApiResponse):
+class InsertResponse(BaseModel):
     """Response from vector insert operation."""
-    inserted_count: Optional[int] = None
+    model_config = ConfigDict(extra="forbid")
+    
+    success: bool
+    data: Optional[Any] = None
+    error: Optional[str] = None
 
 
-class CollectionResponse(ApiResponse):
+class CollectionResponse(BaseModel):
     """Response from collection operations."""
-    collection: Optional[CollectionConfig] = None
-    stats: Optional[CollectionStats] = None
+    model_config = ConfigDict(extra="forbid")
+    
+    success: bool
+    data: Optional[Any] = None
+    error: Optional[str] = None
 
 
-class ListCollectionsResponse(ApiResponse):
+class ListCollectionsResponse(BaseModel):
     """Response from list collections operation."""
-    collections: List[str] = Field(default_factory=list)
+    model_config = ConfigDict(extra="forbid")
+    
+    success: bool
+    data: List[str] = Field(default_factory=list)
+    error: Optional[str] = None
+    
+    @property
+    def collections(self) -> List[str]:
+        """Backward compatibility property."""
+        return self.data
 
 
 # Type aliases for convenience

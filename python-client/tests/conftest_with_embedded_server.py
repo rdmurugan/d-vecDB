@@ -1,24 +1,21 @@
 """
 Pytest configuration and fixtures for d-vecDB client tests with embedded server support.
+This version automatically starts and stops the d-vecDB server using the d-vecdb-server package.
 """
 
 import pytest
 import asyncio
 import numpy as np
-from typing import Generator
-try:
-    from typing import AsyncGenerator
-except ImportError:
-    from collections.abc import AsyncGenerator
+from typing import Generator, AsyncGenerator
 import os
-import subprocess
 import time
 import socket
+import sys
 
 from vectordb_client import VectorDBClient, AsyncVectorDBClient
 from vectordb_client.types import CollectionConfig, Vector, DistanceMetric
 
-# Try to import the embedded server package
+# Try to import the server package
 try:
     from d_vecdb_server import DVecDBServer
     EMBEDDED_SERVER_AVAILABLE = True
@@ -149,18 +146,8 @@ def client(test_config) -> Generator[VectorDBClient, None, None]:
             else:
                 pytest.skip("External VectorDB server not available for testing")
     except Exception as e:
-        # Handle health check format mismatch for embedded server
         if test_config["embedded_server"] is not None:
-            # Try alternative health check method
-            try:
-                import httpx
-                response = httpx.get(f"http://{test_config['host']}:{test_config['port']}/health", timeout=5)
-                if response.status_code == 200:
-                    print(f"✅ Embedded server health check passed via direct HTTP")
-                else:
-                    pytest.skip(f"Embedded server health check failed: HTTP {response.status_code}")
-            except Exception as http_e:
-                pytest.skip(f"Embedded server connection failed: {e}")
+            pytest.skip(f"Embedded server connection failed: {e}")
         else:
             pytest.skip(f"External VectorDB server not available: {e}")
     
@@ -173,7 +160,7 @@ def client(test_config) -> Generator[VectorDBClient, None, None]:
 
 
 @pytest.fixture
-async def async_client(test_config):
+async def async_client(test_config) -> AsyncGenerator[AsyncVectorDBClient, None, None]:
     """Asynchronous VectorDB client fixture."""
     client = AsyncVectorDBClient(host=test_config["host"], port=test_config["port"])
     
@@ -187,19 +174,8 @@ async def async_client(test_config):
             else:
                 pytest.skip("External VectorDB server not available for async testing")
     except Exception as e:
-        # Handle health check format mismatch for embedded server
         if test_config["embedded_server"] is not None:
-            # Try alternative health check method
-            try:
-                import httpx
-                async with httpx.AsyncClient() as http_client:
-                    response = await http_client.get(f"http://{test_config['host']}:{test_config['port']}/health", timeout=5)
-                    if response.status_code == 200:
-                        print(f"✅ Embedded server async health check passed via direct HTTP")
-                    else:
-                        pytest.skip(f"Embedded server async health check failed: HTTP {response.status_code}")
-            except Exception as http_e:
-                pytest.skip(f"Embedded server async connection failed: {e}")
+            pytest.skip(f"Embedded server async connection failed: {e}")
         else:
             pytest.skip(f"External VectorDB server not available for async testing: {e}")
     
@@ -299,7 +275,10 @@ def clean_collection(client: VectorDBClient, test_collection_config: CollectionC
 
 
 @pytest.fixture(scope="function")
-async def async_clean_collection(async_client, test_collection_config):
+async def async_clean_collection(
+    async_client: AsyncVectorDBClient, 
+    test_collection_config: CollectionConfig
+):
     """Ensure clean test collection before each async test."""
     collection_name = test_collection_config.name
     
@@ -339,11 +318,11 @@ def setup_test_collection(
 
 @pytest.fixture
 async def async_setup_test_collection(
-    async_client, 
-    test_collection_config,
-    sample_vectors,
-    async_clean_collection
-):
+    async_client: AsyncVectorDBClient,
+    test_collection_config: CollectionConfig,
+    sample_vectors: list[Vector],
+    async_clean_collection: str
+) -> str:
     """Set up a test collection with sample data (async)."""
     collection_name = async_clean_collection
     
@@ -393,62 +372,25 @@ def pytest_configure(config):
     config.addinivalue_line(
         "markers", "slow: mark test as slow running"
     )
+    config.addinivalue_line(
+        "markers", "requires_server: mark test as requiring a running server"
+    )
 
 
-# Skip conditions
-def skip_if_no_server():
-    """Skip test if VectorDB server is not available."""
-    try:
-        client = VectorDBClient(host=TEST_HOST, port=TEST_PORT)
-        available = client.ping()
-        client.close()
-        return not available
-    except:
-        return True
-
-
-# Optional d-vecdb-server package integration
-def get_server_package():
-    """Get d-vecdb-server package if available."""
-    try:
-        from d_vecdb_server import DVecDBServer
-        return DVecDBServer
-    except ImportError:
-        return None
-
-
-def start_server_if_available(port=None, host=None):
-    """
-    Utility function to start a server using d-vecdb-server package if available.
-    
-    Usage in tests:
-        server = start_server_if_available(port=8081)
-        if server:
-            # Use server
-            pass
-        server.stop() if server else None
-    """
-    ServerClass = get_server_package()
-    if ServerClass is None:
-        return None
-    
-    try:
-        server = ServerClass(
-            host=host or TEST_HOST,
-            port=port or TEST_PORT,
-            grpc_port=TEST_GRPC_PORT
-        )
-        if server.start(background=True, timeout=30):
-            return server
-        else:
-            return None
-    except Exception:
-        return None
-
-
-def check_server_package_available():
-    """Check if d-vecdb-server package is available."""
-    return get_server_package() is not None
+# Environment info for debugging
+def pytest_sessionstart(session):
+    """Print environment info at start of test session."""
+    print(f"\n{'='*60}")
+    print("d-vecDB Python Client Test Session")
+    print(f"{'='*60}")
+    print(f"Embedded server available: {EMBEDDED_SERVER_AVAILABLE}")
+    print(f"Use embedded server: {USE_EMBEDDED_SERVER}")
+    print(f"Auto-start server: {AUTO_START_SERVER}")
+    print(f"Test host: {TEST_HOST}")
+    print(f"Test ports: REST={TEST_PORT}, gRPC={TEST_GRPC_PORT}")
+    if not EMBEDDED_SERVER_AVAILABLE:
+        print("⚠️  d-vecdb-server package not found - install with: pip install d-vecdb-server")
+    print(f"{'='*60}")
 
 
 # Custom assertions
@@ -479,3 +421,11 @@ def assert_query_results_valid(results: list, expected_count: int = None):
     # Results should be sorted by distance (ascending)
     distances = [r.distance for r in results]
     assert distances == sorted(distances)
+
+
+# Skip conditions
+def skip_if_no_server():
+    """Skip test if VectorDB server is not available."""
+    # This function is kept for backward compatibility
+    # The new fixtures handle server availability automatically
+    return False

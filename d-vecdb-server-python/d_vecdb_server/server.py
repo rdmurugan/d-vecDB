@@ -158,11 +158,14 @@ data_dir = "{self.data_dir}"
             ]
         else:
             # Use direct arguments
+            # Convert localhost to IP address for server compatibility
+            host_ip = "127.0.0.1" if self.host == "localhost" else self.host
             cmd = [
                 str(self._binary_path),
-                "--host", self.host,
+                "--host", host_ip,
                 "--rest-port", str(self.port),
                 "--grpc-port", str(self.grpc_port),
+                "--metrics-port", str(self.grpc_port + 1),  # Use grpc_port + 1 for metrics
                 "--data-dir", self.data_dir,
                 "--log-level", self.log_level,
             ]

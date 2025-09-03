@@ -1,25 +1,19 @@
 #!/usr/bin/env python3
 """
-d-vecDB Server Python Package
+d-vecDB Server Python Package - Custom installation hooks
 Includes pre-built binaries for multiple platforms
 """
 
 import os
-import sys
 import platform
-import subprocess
-import tarfile
-import zipfile
 from pathlib import Path
-from setuptools import setup, find_packages
+from setuptools import setup
 from setuptools.command.install import install
 from setuptools.command.develop import develop
-from setuptools.command.egg_info import egg_info
 import requests
 
 # Package metadata
-PACKAGE_NAME = "d-vecdb-server"
-VERSION = "0.1.1"
+VERSION = "0.1.3"
 REPO_URL = "https://github.com/rdmurugan/d-vecDB"
 BINARY_NAME = "vectordb-server"
 
@@ -124,87 +118,11 @@ class CustomDevelopCommand(develop):
         except Exception as e:
             print(f"⚠️  Warning during development setup: {e}")
 
-# Custom egg_info to trigger binary download during wheel building
-class CustomEggInfoCommand(egg_info):
-    """Custom egg_info command."""
-    
-    def run(self):
-        egg_info.run(self)
-        
-        # Only download during actual installation, not during wheel building
-        if "bdist_wheel" not in sys.argv:
-            try:
-                platform_suffix = get_platform()
-                download_binary(VERSION, platform_suffix)
-            except Exception:
-                pass  # Ignore errors during egg_info
-
-def read_readme():
-    """Read the README file."""
-    readme_path = Path(__file__).parent / "README.md"
-    if readme_path.exists():
-        return readme_path.read_text(encoding="utf-8")
-    return ""
-
-setup(
-    name=PACKAGE_NAME,
-    version=VERSION,
-    author="Durai",
-    author_email="durai@infinidatum.com",
-    description="High-performance vector database server with embedded binaries",
-    long_description=read_readme(),
-    long_description_content_type="text/markdown",
-    url=REPO_URL,
-    packages=find_packages(),
-    classifiers=[
-        "Development Status :: 4 - Beta",
-        "Intended Audience :: Developers",
-        "Intended Audience :: Science/Research",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
-        "Programming Language :: Python :: 3.11",
-        "Programming Language :: Python :: 3.12",
-        "Topic :: Database",
-        "Topic :: Scientific/Engineering :: Artificial Intelligence",
-    ],
-    python_requires=">=3.8",
-    install_requires=[
-        "requests>=2.25.0",
-    ],
-    extras_require={
-        "client": [
-            "d-vecdb",  # Include the Python client
-        ],
-        "dev": [
-            "pytest>=7.0.0",
-            "black>=22.0.0",
-            "isort>=5.0.0",
-        ],
-    },
-    entry_points={
-        "console_scripts": [
-            "d-vecdb-server=d_vecdb_server.cli:main",
-            "vectordb-server=d_vecdb_server.cli:main",
-        ],
-    },
-    cmdclass={
-        "install": CustomInstallCommand,
-        "develop": CustomDevelopCommand,
-        "egg_info": CustomEggInfoCommand,
-    },
-    include_package_data=True,
-    package_data={
-        "d_vecdb_server": ["binaries/*"],
-    },
-    zip_safe=False,
-    project_urls={
-        "Bug Reports": f"{REPO_URL}/issues",
-        "Source": REPO_URL,
-        "Documentation": f"{REPO_URL}#readme",
-    },
-    keywords="vector database, similarity search, machine learning, embeddings, rust",
-)
+# Use pyproject.toml for all package metadata, only custom commands here
+if __name__ == "__main__":
+    setup(
+        cmdclass={
+            "install": CustomInstallCommand,
+            "develop": CustomDevelopCommand,
+        },
+    )

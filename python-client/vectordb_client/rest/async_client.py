@@ -156,7 +156,7 @@ class AsyncRestClient:
     async def get_collection_stats(self, name: str) -> CollectionStats:
         """Get collection statistics."""
         response_data = await self._make_request("GET", f"/collections/{name}/stats")
-        return CollectionStats(**response_data["stats"])
+        return CollectionStats(**response_data["data"])
     
     # Vector Operations
     async def insert_vector(self, collection_name: str, vector: Vector) -> InsertResponse:
@@ -215,26 +215,35 @@ class AsyncRestClient:
         if hasattr(query_vector, 'tolist'):
             query_vector = query_vector.tolist()
         
-        search_request = SearchRequest(
-            query_vector=query_vector,
-            limit=limit,
-            ef_search=ef_search,
-            filter=filter
-        )
+        # Server expects {"vector": [...], "limit": N}
+        search_data = {
+            "vector": query_vector,
+            "limit": limit
+        }
+        if ef_search is not None:
+            search_data["ef_search"] = ef_search
+        if filter is not None:
+            search_data["filter"] = filter
         
         response_data = await self._make_request(
             "POST",
             f"/collections/{collection_name}/search",
-            json_data=search_request.model_dump(exclude_none=True)
+            json_data=search_data
         )
         
-        return SearchResponse(**response_data)
+        # Convert response data to QueryResult list
+        results = [QueryResult(**item) for item in response_data.get("data", [])]
+        return SearchResponse(
+            success=response_data["success"],
+            data=results,
+            error=response_data.get("error")
+        )
     
     # Server Operations
     async def get_server_stats(self) -> ServerStats:
         """Get server statistics."""
         response_data = await self._make_request("GET", "/stats")
-        return ServerStats(**response_data["stats"])
+        return ServerStats(**response_data["data"])
     
     async def health_check(self) -> HealthResponse:
         """Check server health."""
@@ -259,10 +268,26 @@ class AsyncRestClient:
         """Create a collection with minimal configuration."""
         from ..types import DistanceMetric
         
+        # Map lowercase to proper enum values
+        metric_mapping = {
+            "cosine": DistanceMetric.COSINE,
+            "euclidean": DistanceMetric.EUCLIDEAN,
+            "dot_product": DistanceMetric.DOT_PRODUCT,
+            "manhattan": DistanceMetric.MANHATTAN
+        }
+        
+        if distance_metric.lower() in metric_mapping:
+            metric = metric_mapping[distance_metric.lower()]
+        else:
+            try:
+                metric = DistanceMetric(distance_metric)
+            except ValueError:
+                raise ValueError(f"Invalid distance metric: {distance_metric}. Valid options: {list(metric_mapping.keys())}")
+        
         config = CollectionConfig(
             name=name,
             dimension=dimension,
-            distance_metric=DistanceMetric(distance_metric)
+            distance_metric=metric
         )
         return await self.create_collection(config)
     
