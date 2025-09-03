@@ -1,21 +1,21 @@
 class DVecdbBin < Formula
   desc "High-performance vector database written in Rust (binary release)"
   homepage "https://github.com/rdmurugan/d-vecDB"
-  version "0.1.1"
+  version "0.1.4"
   license "MIT"
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/rdmurugan/d-vecDB/releases/download/v0.1.1/vectordb-server-macos-arm64"
+      url "https://github.com/rdmurugan/d-vecDB/releases/download/v0.1.4/vectordb-server-macos-arm64"
       sha256 "PLACEHOLDER_ARM64_SHA256"
     else
-      url "https://github.com/rdmurugan/d-vecDB/releases/download/v0.1.1/vectordb-server-macos-x64"
+      url "https://github.com/rdmurugan/d-vecDB/releases/download/v0.1.4/vectordb-server-macos-x64"
       sha256 "PLACEHOLDER_X64_SHA256"
     end
   end
 
   on_linux do
-    url "https://github.com/rdmurugan/d-vecDB/releases/download/v0.1.1/vectordb-server-linux-musl-x64"
+    url "https://github.com/rdmurugan/d-vecDB/releases/download/v0.1.4/vectordb-server-linux-musl-x64"
     sha256 "PLACEHOLDER_LINUX_SHA256"
   end
 

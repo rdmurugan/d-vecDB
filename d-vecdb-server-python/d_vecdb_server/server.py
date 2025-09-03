@@ -68,15 +68,35 @@ class DVecDBServer:
         binaries_dir = package_dir / "binaries"
         
         # Determine binary name based on platform
-        if platform.system().lower() == "windows":
-            binary_name = "vectordb-server.exe"
+        system = platform.system().lower()
+        machine = platform.machine().lower()
+        
+        # Map platform/architecture to binary names
+        if system == "darwin":  # macOS
+            if machine in ["arm64", "aarch64"]:
+                binary_name = "vectordb-server-darwin-arm64"
+            else:
+                binary_name = "vectordb-server-darwin-x64"
+        elif system == "linux":
+            if machine in ["x86_64", "amd64"]:
+                binary_name = "vectordb-server-linux-x64"
+            else:
+                binary_name = f"vectordb-server-linux-{machine}"
+        elif system == "windows":
+            binary_name = "vectordb-server-windows-x64.exe"
         else:
+            # Fallback to generic binary name
             binary_name = "vectordb-server"
         
-        # Check package binaries directory
+        # Check package binaries directory with platform-specific name
         binary_path = binaries_dir / binary_name
         if binary_path.exists() and binary_path.is_file():
             return binary_path
+        
+        # Fallback to generic binary name
+        fallback_path = binaries_dir / "vectordb-server"
+        if fallback_path.exists() and fallback_path.is_file():
+            return fallback_path
         
         # Check if binary is in PATH (but not the Python wrapper)
         import shutil

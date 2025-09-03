@@ -1,7 +1,7 @@
 class DVecdb < Formula
   desc "High-performance vector database written in Rust"
   homepage "https://github.com/rdmurugan/d-vecDB"
-  url "https://github.com/rdmurugan/d-vecDB/archive/v0.1.1.tar.gz"
+  url "https://github.com/rdmurugan/d-vecDB/archive/v0.1.4.tar.gz"
   sha256 "PLACEHOLDER_SHA256_WILL_BE_CALCULATED"
   license "MIT"
   head "https://github.com/rdmurugan/d-vecDB.git", branch: "main"

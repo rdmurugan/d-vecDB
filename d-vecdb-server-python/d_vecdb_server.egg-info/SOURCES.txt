@@ -1,3 +1,4 @@
+MANIFEST.in
 README.md
 pyproject.toml
 setup.py
@@ -11,3 +12,6 @@ d_vecdb_server.egg-info/entry_points.txt
 d_vecdb_server.egg-info/requires.txt
 d_vecdb_server.egg-info/top_level.txt
 d_vecdb_server/binaries/vectordb-server
+d_vecdb_server/binaries/vectordb-server-darwin-arm64
+d_vecdb_server/binaries/vectordb-server-darwin-x64
+d_vecdb_server/binaries/vectordb-server-linux-x64
